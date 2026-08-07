@@ -35,6 +35,13 @@
       --chrome: rgba(8,8,10,.78);
     }
 
+    @property --beam-angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
+    }
+    @keyframes light-beam-spin { to { --beam-angle: 360deg; } }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
     body { --active-accent: var(--accent); min-height: 100vh; overflow-x: hidden; background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.55; }
@@ -115,7 +122,7 @@
     .section-intro a:hover, .section-intro a:focus-visible { color: var(--accent); }
     .content-label { width: min(var(--content-width), calc(100% - 180px)); margin: 0 0 16px 180px; font-size: clamp(1.55rem, 3vw, 2rem); font-weight: 650; line-height: 1.15; letter-spacing: -.035em; }
 
-    .timeline { position: relative; width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; padding: 30px 32px 30px 52px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); backdrop-filter: blur(10px); }
+    .timeline { --beam-color: var(--accent); position: relative; isolation: isolate; width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; padding: 30px 32px 30px 52px; border: 1px solid transparent; border-radius: var(--radius); background: var(--surface); box-shadow: inset 0 0 0 1px var(--border); backdrop-filter: blur(10px); }
     .timeline::before { content: ""; position: absolute; top: 42px; bottom: 44px; left: 31px; width: 1px; background: linear-gradient(var(--accent), rgba(200,255,0,.16)); transform: scaleY(0); transform-origin: top; transition: transform 1.2s .25s var(--ease); }
     .timeline.visible::before { transform: scaleY(1); }
     .step { position: relative; display: grid; grid-template-columns: 94px 1fr; gap: 22px; padding-bottom: 42px; }
@@ -134,14 +141,8 @@
 
     #music { --accent: var(--music); }
     .releases { width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; }
-    .release-card { position: relative; isolation: isolate; display: grid; grid-template-columns: 148px minmax(0,1fr) auto; align-items: center; width: 100%; overflow: hidden; border: 1px solid transparent; border-radius: var(--radius); background: linear-gradient(120deg, rgba(179,136,255,.11), var(--surface) 48%); color: var(--text); font: inherit; text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--border); backdrop-filter: blur(10px); transition: transform .55s var(--ease), background .45s var(--ease), box-shadow .55s var(--ease); }
-    .release-card::before { content: ""; position: absolute; inset: 0; z-index: 3; padding: 1px; border-radius: inherit; background: linear-gradient(105deg, transparent 10%, rgba(179,136,255,.15) 31%, rgba(179,136,255,.96) 46%, rgba(255,255,255,.92) 50%, rgba(179,136,255,.96) 54%, rgba(179,136,255,.15) 69%, transparent 90%) 155% 0 / 230% 100% no-repeat; opacity: 0; pointer-events: none; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; transition: opacity .4s var(--ease); }
+    .release-card { --beam-color: var(--music); position: relative; isolation: isolate; display: grid; grid-template-columns: 148px minmax(0,1fr) auto; align-items: center; width: 100%; overflow: hidden; border: 1px solid transparent; border-radius: var(--radius); background: linear-gradient(120deg, rgba(179,136,255,.11), var(--surface) 48%); color: var(--text); font: inherit; text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--border); backdrop-filter: blur(10px); transition: transform .55s var(--ease), background .45s var(--ease), box-shadow .55s var(--ease); }
     .release-card:hover, .release-card:focus-visible, .release-card[aria-expanded="true"] { transform: translateY(-3px); background: linear-gradient(120deg, rgba(179,136,255,.18), var(--surface-hover) 48%); box-shadow: inset 0 0 0 1px rgba(179,136,255,.2), 0 18px 50px rgba(0,0,0,.26), 0 0 34px rgba(179,136,255,.08); outline: none; }
-    .release-card:hover::before, .release-card:focus-visible::before, .release-card[aria-expanded="true"]::before { opacity: 1; animation: release-border-flow 2.8s cubic-bezier(.45,0,.2,1) infinite; }
-    @keyframes release-border-flow {
-      0% { background-position: 155% 0; }
-      58%, 100% { background-position: -155% 0; }
-    }
     .release-cover-wrap { align-self: stretch; aspect-ratio: 1; overflow: hidden; }
     .release-cover { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease), filter .7s var(--ease); }
     .release-card:hover .release-cover, .release-card:focus-visible .release-cover, .release-card[aria-expanded="true"] .release-cover { transform: scale(1.035); filter: saturate(1.08) contrast(1.03); }
@@ -177,11 +178,17 @@
     .platform-listen:hover, .platform-listen:focus-visible { transform: translateY(-2px); background: var(--music); color: var(--bg); outline: none; }
     .live-sets-heading { margin-top: 76px; }
     .sets { display: grid; grid-template-columns: repeat(2, 1fr); width: min(var(--content-width), calc(100% - 180px)); gap: 14px; margin-left: 180px; }
-    .set-card { position: relative; aspect-ratio: 16/9; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-2); color: #fff; text-decoration: none; transition: transform .5s var(--ease), border-color .3s; transition-delay: var(--delay,0ms); }
+    .set-card { --beam-color: var(--music); position: relative; isolation: isolate; display: block; aspect-ratio: 16/9; overflow: hidden; border: 1px solid transparent; border-radius: var(--radius); background: var(--bg-2); color: #fff; text-decoration: none; box-shadow: inset 0 0 0 1px var(--border); transition: transform .5s var(--ease), border-color .3s; transition-delay: var(--delay,0ms); }
     .set-card:hover { transform: translateY(-3px); border-color: var(--border-hi); }
     .set-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.85) brightness(.7); transition: transform .55s var(--ease), filter .55s; }
     .set-card:hover img { transform: scale(1.05); filter: grayscale(.15) brightness(.76); }
     .set-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,.88)); }
+
+    .timeline::after, .release-card::before, .set-card::before { content: ""; position: absolute; inset: 0; z-index: 4; padding: 1px; border-radius: inherit; background: conic-gradient(from var(--beam-angle), transparent 0 36%, color-mix(in srgb, var(--beam-color) 30%, transparent) 42%, var(--beam-color) 48%, rgba(255,255,255,.96) 50%, var(--beam-color) 52%, color-mix(in srgb, var(--beam-color) 30%, transparent) 58%, transparent 64% 100%); opacity: .72; pointer-events: none; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: light-beam-spin 3.4s linear infinite; animation-play-state: paused; }
+    .timeline.visible::after, .releases.visible .release-card::before, .set-card.visible::before { animation-play-state: running; }
+    .timeline:hover::after, .release-card:hover::before, .release-card:focus-visible::before, .set-card:hover::before, .set-card:focus-visible::before { opacity: 1; filter: drop-shadow(0 0 7px color-mix(in srgb, var(--beam-color) 55%, transparent)); }
+
+    .official-video-card { width: 100%; margin-top: 14px; }
     .set-info { position: absolute; z-index: 2; inset: auto 18px 16px; display: flex; align-items: end; justify-content: space-between; gap: 16px; }
     .set-info strong { display: block; font-size: .95rem; }
     .set-info small { color: rgba(255,255,255,.68); font: .66rem/1.4 var(--mono); }
@@ -296,7 +303,7 @@
       .name-block { animation: none; }
       .name-block--alias { display: none; }
       .social-link--music:hover, .social-link--music:focus-visible { animation: none; }
-      .release-card::before { opacity: .75; animation: none !important; background-position: 50% 0; }
+      .timeline::after, .release-card::before, .set-card::before { opacity: .65; animation: none !important; }
       .release-panel { transition: none; }
       .release-panel.is-open .platform-row { animation: none; opacity: 1; transform: none; }
       .language-switcher button span, .language-switcher button::after { transition: none; }
@@ -335,7 +342,7 @@
         </h1>
         <p class="hero-copy" data-i18n="heroCopy">Mathematician, programmer and music producer.</p>
         <div class="social-links" aria-label="Social profiles">
-          <a class="social-link" href="https://instagram.com/matteo.lugli" aria-label="Instagram" title="Instagram">
+          <a class="social-link" href="https://instagram.com/kalkyril" aria-label="Instagram" title="Instagram — @kalkyril">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.12 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.12.66.66 1.33 1.08 2.12 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.12-1.38.66-.66 1.08-1.33 1.38-2.12.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.38-2.12C21.32 1.35 20.65.93 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32A6.16 6.16 0 0 0 12 5.84zm0 10.16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/></svg>
           </a>
           <a class="social-link" href="https://tiktok.com/@matteo.lugli" aria-label="TikTok" title="TikTok">
@@ -424,6 +431,13 @@
             </span>
             <span class="release-open" aria-hidden="true">▶</span>
           </button>
+          <a class="official-video-card set-card reveal" href="https://www.youtube.com/watch?v=ZsrMmJLvzao&amp;list=RDZsrMmJLvzao&amp;start_radio=1" data-official-video>
+            <img src="https://i.ytimg.com/vi/ZsrMmJLvzao/hqdefault.jpg" alt="Back In My Arms official video" loading="lazy">
+            <span class="set-info">
+              <span><strong>Back In My Arms</strong><small data-i18n="officialVideo">Official video</small></span>
+              <span class="play" aria-hidden="true">▶</span>
+            </span>
+          </a>
         </div>
         <h3 class="content-label live-sets-heading reveal" data-i18n="liveSetsLabel">Live sets</h3>
         <div class="sets" id="sets" aria-label="Live set"></div>
@@ -598,6 +612,8 @@
         musicManifesto: "I kinda like making music.",
         releasesLabel: "Releases",
         releaseSingle: "Single",
+        officialVideo: "Official video",
+        officialVideoAria: "Watch the official video for Back In My Arms on YouTube",
         releaseChoosePlatform: "Choose a streaming platform",
         releaseOpenAria: "Open streaming platforms for Back In My Arms",
         releaseCoverAlt: "Back In My Arms cover artwork",
@@ -639,6 +655,8 @@
         musicManifesto: "Mi piace più o meno fare musica.",
         releasesLabel: "Pubblicazioni",
         releaseSingle: "Singolo",
+        officialVideo: "Video ufficiale",
+        officialVideoAria: "Guarda il video ufficiale di Back In My Arms su YouTube",
         releaseChoosePlatform: "Scegli una piattaforma streaming",
         releaseOpenAria: "Apri le piattaforme streaming per Back In My Arms",
         releaseCoverAlt: "Copertina di Back In My Arms",
@@ -680,6 +698,8 @@
         musicManifesto: "J’aime bien faire de la musique.",
         releasesLabel: "Sorties",
         releaseSingle: "Single",
+        officialVideo: "Clip officiel",
+        officialVideoAria: "Voir le clip officiel de Back In My Arms sur YouTube",
         releaseChoosePlatform: "Choisissez une plateforme de streaming",
         releaseOpenAria: "Ouvrir les plateformes de streaming pour Back In My Arms",
         releaseCoverAlt: "Pochette de Back In My Arms",
@@ -721,6 +741,8 @@
         musicManifesto: "Me gusta bastante hacer música.",
         releasesLabel: "Lanzamientos",
         releaseSingle: "Sencillo",
+        officialVideo: "Vídeo oficial",
+        officialVideoAria: "Ver el vídeo oficial de Back In My Arms en YouTube",
         releaseChoosePlatform: "Elige una plataforma de streaming",
         releaseOpenAria: "Abrir las plataformas de streaming para Back In My Arms",
         releaseCoverAlt: "Portada de Back In My Arms",
@@ -781,12 +803,14 @@
       document.querySelector(".releases").setAttribute("aria-label", copy.releasesAria);
       document.querySelector(".release-card").setAttribute("aria-label", copy.releaseOpenAria);
       document.querySelector(".release-cover").alt = copy.releaseCoverAlt;
+      document.querySelector("[data-official-video]").setAttribute("aria-label", copy.officialVideoAria);
+      document.querySelector("[data-official-video] img").alt = copy.officialVideoAria;
       document.querySelector("#sets").setAttribute("aria-label", copy.setsAria);
       document.querySelector(".equipment-board").setAttribute("aria-label", copy.equipmentAria);
       document.querySelector(".equipment-photo").alt = copy.equipmentPhotoAlt;
       document.querySelector(".language-switcher").setAttribute("aria-label", copy.languageAria);
       document.querySelector(".profile").alt = copy.profileAlt;
-      document.querySelectorAll(".set-card").forEach((card, index) => {
+      document.querySelectorAll("#sets .set-card").forEach((card, index) => {
         card.querySelector("img").alt = copy.coverAlt.replace("{title}", SETS[index].title);
         card.querySelector("small").textContent = `${copy.liveSet} · ${SETS[index].duration}`;
       });
@@ -810,7 +834,7 @@
 
     const releaseCard = document.querySelector(".release-card");
     const releasePanel = document.querySelector("#release-panel");
-    document.querySelector(".releases").append(releasePanel);
+    releaseCard.after(releasePanel);
 
     function setReleasePanel(open) {
       releasePanel.classList.toggle("is-open", open);
