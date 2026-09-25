@@ -2,37 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Matteo Lugli / kalkyril</title>
   <meta name="description" content="kalkyril is Matteo Lugli: mathematician, programmer and music producer. Mathematics, research and music in one place.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Matteo Lugli / kalkyril">
   <meta property="og:description" content="Matteo Lugli. Mathematics, programming and music.">
-  <meta property="og:image" content="assets/kalkyril-profile-v3.png">
-  <meta name="theme-color" content="#08080a">
+  <meta property="og:image" content="assets/hero-a.jpg">
+  <meta name="theme-color" content="#fdfdfd">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23c8ff00'/></svg>">
+  <link rel="preload" as="image" href="assets/hero-a.webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #08080a;
-      --bg-2: #0e0e11;
-      --surface: rgba(255,255,255,.025);
-      --surface-hover: rgba(255,255,255,.055);
-      --border: rgba(255,255,255,.08);
-      --border-hi: rgba(255,255,255,.2);
-      --text: #f4f4f6;
-      --text-dim: #8a8a93;
+      --paper: #fdfdfd;
+      --night: #09090b;
+      --ink: #0e0e10;
       --accent: #c8ff00;
       --music: #b388ff;
+      --violet-deep: #6d3cf0;
       --radius: 18px;
       --maxw: 1040px;
       --content-width: 720px;
+      --edge: clamp(18px, 3.4vw, 52px);
+      --serif: "Playfair Display", "Times New Roman", Georgia, serif;
       --sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       --ease: cubic-bezier(.22,.61,.36,1);
-      --chrome: rgba(8,8,10,.78);
+      --ease-out: cubic-bezier(.16,1,.3,1);
     }
 
     @property --beam-angle {
@@ -43,104 +42,213 @@
     @keyframes light-beam-spin { to { --beam-angle: 360deg; } }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-    body { --active-accent: var(--accent); min-height: 100vh; overflow-x: hidden; background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.55; }
-    body.music-mode { --active-accent: var(--music); }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
+
+    /* Day (paper) tokens by default; night tokens take over when the Music chapter arrives. */
+    body {
+      --bg: var(--paper);
+      --bg-2: #f1f1f2;
+      --text: var(--ink);
+      --text-dim: #66666f;
+      --border: rgba(14,14,16,.1);
+      --border-hi: rgba(14,14,16,.26);
+      --surface: rgba(14,14,16,.025);
+      --surface-hover: rgba(14,14,16,.05);
+      --chrome: rgba(253,253,253,.78);
+      --journey: var(--ink);
+      --node-on: var(--accent);
+      --active-accent: var(--accent);
+      min-height: 100vh; overflow-x: hidden; background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.55;
+      transition: background-color .9s var(--ease), color .9s var(--ease);
+    }
+    body.music-mode {
+      --bg: var(--night);
+      --bg-2: #0e0e11;
+      --text: #f4f4f6;
+      --text-dim: #8a8a93;
+      --border: rgba(255,255,255,.08);
+      --border-hi: rgba(255,255,255,.2);
+      --surface: rgba(255,255,255,.025);
+      --surface-hover: rgba(255,255,255,.055);
+      --chrome: rgba(8,8,10,.78);
+      --journey: var(--music);
+      --node-on: var(--music);
+      --active-accent: var(--music);
+    }
     a { color: inherit; }
     ::selection { color: #08080a; background: var(--accent); }
+    :focus-visible { outline: 2px solid var(--violet-deep); outline-offset: 3px; }
     .wrap { width: min(var(--maxw), calc(100% - 40px)); margin-inline: auto; }
 
-    .bg-mesh { position: fixed; inset: 0; z-index: -3; overflow: hidden; pointer-events: none; }
-    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .18; transition: background 1s var(--ease), opacity 1s var(--ease); }
-    .blob-a { width: 64vmax; height: 64vmax; top: -28vmax; left: -22vmax; background: var(--active-accent); animation: float-a 22s var(--ease) infinite alternate; }
-    .blob-b { width: 56vmax; height: 56vmax; right: -20vmax; bottom: -24vmax; background: var(--music); opacity: .18; animation: float-b 26s var(--ease) infinite alternate; }
-    body.about-mode .blob-b { background: var(--accent); opacity: .18; }
-    body.music-mode .blob-a { opacity: .2; }
-    body.music-mode .blob-b { opacity: .2; }
+    /* Night ambience: only visible in the Music chapter */
+    .bg-mesh { position: fixed; inset: 0; z-index: -3; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 1.1s var(--ease); }
+    body.music-mode .bg-mesh { opacity: 1; }
+    .mesh-blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .11; }
+    .mesh-blob-a { width: 64vmax; height: 64vmax; top: -28vmax; left: -22vmax; background: var(--music); animation: float-a 22s var(--ease) infinite alternate; }
+    .mesh-blob-b { width: 56vmax; height: 56vmax; right: -20vmax; bottom: -24vmax; background: var(--accent); opacity: .08; animation: float-b 26s var(--ease) infinite alternate; }
     @keyframes float-a { to { transform: translate(8vmax,10vmax) scale(1.14); } }
     @keyframes float-b { to { transform: translate(-7vmax,-8vmax) scale(1.18); } }
-    .spotlight { position: fixed; inset: 0; z-index: -2; pointer-events: none; background: radial-gradient(420px circle at var(--mx,50%) var(--my,0%), color-mix(in srgb, var(--active-accent) 9%, transparent), transparent 70%); transition: background 1s var(--ease); }
-    .scroll-progress { position: fixed; top: 0; left: 0; z-index: 50; width: 100%; height: 3px; background: var(--active-accent); transform: scaleX(0); transform-origin: left; box-shadow: 0 0 14px var(--active-accent); transition: background .8s var(--ease); pointer-events: none; }
+    .spotlight { position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: 0; background: radial-gradient(420px circle at var(--mx,50%) var(--my,0%), color-mix(in srgb, var(--music) 9%, transparent), transparent 70%); transition: opacity 1s var(--ease); }
+    body.music-mode .spotlight { opacity: 1; }
 
-    .site-nav { position: sticky; top: 0; z-index: 20; border-bottom: 1px solid transparent; background: transparent; transition: background .35s var(--ease), border-color .35s var(--ease), backdrop-filter .35s var(--ease); }
-    .site-nav.scrolled { border-color: var(--border); background: var(--chrome); backdrop-filter: blur(16px); }
-    .nav-inner { min-height: 72px; display: flex; align-items: center; justify-content: center; }
-    .nav-links { display: flex; align-items: center; gap: 6px; }
-    .nav-links a { padding: 9px 12px; border-radius: 999px; color: var(--text-dim); font-size: .95rem; font-weight: 600; text-decoration: none; transition: color .25s, background .25s; }
-    .nav-links a:hover { color: var(--text); background: var(--surface-hover); }
+    /* Floating pill nav: appears once the hero is behind us */
+    .site-nav { position: fixed; top: 14px; left: 50%; z-index: 30; visibility: hidden; opacity: 0; transform: translate(-50%, -140%); pointer-events: none; transition: opacity .4s var(--ease-out), transform .5s var(--ease-out), visibility .5s; }
+    .site-nav.scrolled { visibility: visible; opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+    .nav-links { display: flex; align-items: center; gap: 2px; padding: 5px; border: 1px solid var(--border); border-radius: 999px; background: var(--chrome); backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); box-shadow: 0 10px 30px rgba(0,0,0,.08); transition: background-color .9s var(--ease), border-color .9s var(--ease); }
+    .nav-links a { padding: 8px 14px; border-radius: 999px; color: var(--text-dim); font-size: .9rem; font-weight: 600; text-decoration: none; white-space: nowrap; transition: color .25s, background .25s; }
+    .nav-links a:hover, .nav-links a.is-current { color: var(--text); background: var(--surface-hover); }
 
-    .hero { min-height: calc(100svh - 72px); display: grid; grid-template-columns: 500px minmax(0, 500px); justify-content: center; align-content: center; align-items: center; gap: 24px; padding-block: 24px; }
-    .profile-wrap { position: relative; width: 500px; }
-    .profile-wrap::after { content: ""; position: absolute; top: 105px; left: 100px; width: 300px; height: 300px; z-index: -1; border-radius: 27px; background: conic-gradient(from 20deg, var(--accent), var(--music), var(--accent)); filter: blur(13px); opacity: .5; animation: spin 9s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .profile-frame { position: relative; width: 420px; margin-inline: auto; border-radius: 30px; }
-    .profile { display: block; width: 100%; height: auto; border-radius: inherit; object-fit: contain; filter: drop-shadow(0 24px 28px rgba(0,0,0,.4)); }
-    .prompt { margin-bottom: 10px; color: var(--accent); font: .72rem/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
-    .prompt a { color: inherit; text-decoration: none; transition: color .22s var(--ease), text-shadow .22s var(--ease); }
-    .prompt a:hover, .prompt a:focus-visible { color: var(--text); text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 62%, transparent); }
-    h1 { padding: .08em 0 .26em; margin-bottom: -.22em; font-size: clamp(2.85rem, 5.9vw, 5rem); font-weight: 700; line-height: 1; letter-spacing: -.065em; clip-path: inset(-20% 100% -38% -10%); transform: translateX(-26px); opacity: 0; transition: clip-path 1.1s .12s var(--ease), transform 1.1s .12s var(--ease), opacity .7s .12s; }
-    body.loaded h1 { clip-path: inset(-20% -10% -38% -10%); transform: none; opacity: 1; }
-    .name-cycle { display: grid; align-items: baseline; width: max-content; max-width: 100%; padding-bottom: .44em; margin-bottom: -.40em; overflow: visible; }
-    .name-block { grid-area: 1 / 1; width: max-content; max-width: 100%; color: var(--text); text-shadow: 0 12px 28px rgba(0,0,0,.42); will-change: clip-path, transform, opacity; }
-    .name-block--real { animation: name-block-real 10s 1.2s infinite var(--ease); }
-    .name-block--alias { clip-path: inset(-20% 100% -38% -10%); transform: translateX(-26px); opacity: 0; animation: name-block-alias 10s 1.2s infinite var(--ease); }
-    @keyframes name-block-real {
-      0%, 38% { clip-path: inset(-20% -10% -38% -10%); transform: translateX(0); opacity: 1; }
-      42%, 92% { clip-path: inset(-20% 100% -38% -10%); transform: translateX(-26px); opacity: 0; }
-      100% { clip-path: inset(-20% -10% -38% -10%); transform: translateX(0); opacity: 1; }
+    /* ───────────── HERO ───────────── */
+    .hero { --px: 0; --py: 0; position: relative; height: max(100svh, 560px); overflow: hidden; background: var(--paper); color: var(--ink); isolation: isolate; touch-action: pan-y; }
+    .hero-stage { position: absolute; inset: 0; z-index: 1; transform: translate3d(calc(var(--px) * -14px), calc(var(--py) * -10px), 0); will-change: transform; }
+    .hero-img { position: absolute; left: 50%; bottom: -14px; width: calc(max(100svh, 560px) * 16 / 9 + 26px); height: auto; aspect-ratio: 16 / 9; transform: translateX(-50%) scale(1.035); opacity: 0; filter: blur(10px); transition: opacity 1.2s var(--ease-out), transform 1.6s var(--ease-out), filter 1.2s var(--ease-out); user-select: none; -webkit-user-drag: none; -webkit-mask-image: linear-gradient(to bottom, transparent, #000 13%); mask-image: linear-gradient(to bottom, transparent, #000 13%); }
+    body.loaded .hero-img { opacity: 1; transform: translateX(-50%); filter: none; }
+    .hero-waves, .hero-reveal { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .hero-waves { z-index: 0; mix-blend-mode: multiply; transform: translate3d(calc(var(--px) * -24px), calc(var(--py) * -16px), 0); }
+    .hero-reveal { z-index: 2; }
+
+    .hero-ui { position: absolute; inset: 0; z-index: 3; pointer-events: none; padding: var(--edge); padding-top: max(var(--edge), env(safe-area-inset-top)); }
+    .hero-ui > * { pointer-events: auto; }
+    .depth { transform: translate3d(calc(var(--px) * var(--d, 6) * -1px), calc(var(--py) * var(--d, 6) * -1px), 0); }
+    /* White twin of the UI, clipped per-pixel by the blob so text stays legible over image two */
+    .hero-ui--inverse { z-index: 4; pointer-events: none; clip-path: inset(50% 50% 50% 50%); }
+    .hero-ui--inverse, .hero-ui--inverse * { pointer-events: none !important; }
+    .hero .hero-ui--inverse, .hero .hero-ui--inverse a, .hero .hero-ui--inverse .social-link, .hero .hero-ui--inverse .hero-nav a, .hero .hero-ui--inverse .scroll-cue { color: #fff; }
+    .hero .hero-ui--inverse .hero-role { color: rgba(255,255,255,.82); }
+    .hero .hero-ui--inverse .social-link .spotify-wave { stroke: #0b0b0e; }
+
+    .hero-title { position: absolute; top: max(var(--edge), env(safe-area-inset-top)); left: var(--edge); --d: 10; max-width: 60vw; }
+    .hero-title { --name-size: clamp(3.1rem, 8.4vw, 8.2rem); --name-pitch: calc(var(--name-size) * .86); }
+    h1 { font-family: var(--serif); font-weight: 500; font-size: var(--name-size); line-height: .86; letter-spacing: -.028em; }
+    .name-cycle { display: grid; align-items: start; width: max-content; max-width: 100%; clip-path: inset(-10% 100% -20% -6%); transition: clip-path 1.2s .2s var(--ease-out); }
+    body.loaded .name-cycle { clip-path: inset(-10% -12% -20% -6%); }
+    .name-block { grid-area: 1 / 1; display: flex; flex-direction: column; width: max-content; }
+    /* Each line sits in its own mask; the text rolls up and out, the next name rolls in from below. */
+    .name-line { display: block; overflow: hidden; padding: .08em .12em .32em 0; margin: -.08em 0 -.32em; }
+    .name-line > span { display: block; transform: translateY(0); will-change: transform; }
+    .name-block--alias { font-style: italic; font-weight: 400; letter-spacing: -.035em; }
+    .name-block--alias .name-line > span { transform: translateY(150%); }
+    body.loaded .name-block--real .name-line > span { animation: name-real 10s 2.4s infinite cubic-bezier(.76,0,.24,1); }
+    body.loaded .name-block--real .name-line:nth-child(2) > span { animation-delay: 2.52s; }
+    body.loaded .name-block--alias .name-line > span { animation: name-alias 10s 2.4s infinite cubic-bezier(.76,0,.24,1); }
+    body.loaded .hero-role { animation: name-role 10s 2.4s infinite cubic-bezier(.76,0,.24,1); }
+    @keyframes name-real {
+      0%, 36% { transform: translateY(0); }
+      42% { transform: translateY(-150%); }
+      42.01%, 91% { transform: translateY(150%); }
+      97%, 100% { transform: translateY(0); }
     }
-    @keyframes name-block-alias {
-      0%, 42% { clip-path: inset(-20% 100% -38% -10%); transform: translateX(-26px); opacity: 0; }
-      50%, 88% { clip-path: inset(-20% -10% -38% -10%); transform: translateX(0); opacity: 1; }
-      92%, 100% { clip-path: inset(-20% 100% -38% -10%); transform: translateX(-26px); opacity: 0; }
+    @keyframes name-alias {
+      0%, 42% { transform: translateY(150%); }
+      48.5%, 85% { transform: translateY(0); }
+      91% { transform: translateY(-150%); }
+      91.01%, 100% { transform: translateY(150%); }
     }
-    .hero-copy { max-width: 610px; margin-top: 22px; font-size: clamp(1.05rem, 2.2vw, 1.35rem); line-height: 1.45; letter-spacing: -.015em; }
-    .hero-copy strong { color: var(--accent); font-weight: 600; }
-    .social-links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
-    .social-link { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--border); border-radius: 50%; background: var(--surface); color: var(--text-dim); text-decoration: none; backdrop-filter: blur(10px); transition: transform .25s var(--ease), color .25s, border-color .25s, background .25s, box-shadow .35s var(--ease), opacity .25s; }
-    .social-link:hover { transform: translateY(-2px); color: var(--accent); border-color: var(--border-hi); background: var(--surface-hover); }
-    .social-link svg { width: 18px; height: 18px; fill: currentColor; }
-    .social-link.is-disabled { opacity: .38; cursor: not-allowed; }
-    .social-link.is-disabled:hover { transform: none; color: var(--text-dim); border-color: var(--border); background: var(--surface); }
-    .social-link--music:hover, .social-link--music:focus-visible { transform: translateY(-3px); color: var(--music); border-color: color-mix(in srgb, var(--music) 58%, transparent); background: color-mix(in srgb, var(--music) 10%, var(--surface)); animation: music-social-pulse 1.15s ease-in-out infinite alternate; }
-    .social-link.is-disabled.social-link--music:hover { transform: translateY(-3px); opacity: .72; color: var(--music); border-color: color-mix(in srgb, var(--music) 58%, transparent); background: color-mix(in srgb, var(--music) 10%, var(--surface)); }
-    @keyframes music-social-pulse { from { box-shadow: 0 0 0 rgba(179,136,255,0); } to { box-shadow: 0 0 22px rgba(179,136,255,.38); } }
+    /* The subtitle follows the name: it rises by one line while the single-line alias shows, so no empty row is left. */
+    @keyframes name-role {
+      0%, 40% { transform: translateY(0); }
+      47%, 87% { transform: translateY(calc(var(--name-pitch) * -1)); }
+      94%, 100% { transform: translateY(0); }
+    }
+    .hero-role { margin-top: calc(var(--name-size) * .32 + 8px); max-width: 30ch; color: #55555d; font-size: clamp(.92rem, 1.25vw, 1.08rem); line-height: 1.4; letter-spacing: -.005em; }
+
+    .hero-nav { position: absolute; top: max(var(--edge), env(safe-area-inset-top)); right: var(--edge); --d: 6; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .hero-nav a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-size: clamp(1rem, 1.3vw, 1.15rem); font-weight: 500; letter-spacing: -.005em; line-height: 1.3; text-decoration: none; }
+    .ne-arrow { width: 1.05em; height: 1.05em; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .35s var(--ease-out); }
+    .hero-nav a:hover .ne-arrow, .hero-nav a:focus-visible .ne-arrow { transform: translate(3px, -3px); }
+    .hero-social { position: absolute; right: calc(var(--edge) - 10px); bottom: max(calc(var(--edge) - 8px), env(safe-area-inset-bottom)); --d: 5; display: flex; gap: 2px; }
+    .hero-social .social-link { display: grid; place-items: center; width: 42px; height: 42px; color: var(--ink); text-decoration: none; border-radius: 50%; transition: color .3s var(--ease), transform .35s var(--ease-out); }
+    .hero-social .social-link:hover, .hero-social .social-link:focus-visible { transform: translateY(-3px); }
+    .hero-social .social-link svg { width: 19px; height: 19px; fill: currentColor; }
+    .social-link .spotify-wave { fill: none; stroke: var(--paper); stroke-width: 1.65; stroke-linecap: round; }
     .soundcloud-icon .soundcloud-wave { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
-    .spotify-icon .spotify-wave { fill: none; stroke: var(--bg); stroke-width: 1.65; stroke-linecap: round; }
-    .letterboxd-icon .letterboxd-left { fill: currentColor; opacity: .52; }
-    .letterboxd-icon .letterboxd-center { fill: currentColor; }
-    .letterboxd-icon .letterboxd-right { fill: currentColor; opacity: .72; }
-    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 16px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text); font: .72rem/1 var(--mono); text-decoration: none; backdrop-filter: blur(10px); transition: transform .25s var(--ease), border-color .25s, background .25s; }
-    .button:hover { transform: translateY(-2px); border-color: var(--border-hi); background: var(--surface-hover); }
 
-    section { padding-block: 104px; scroll-margin-top: 72px; }
-    #about { min-height: 100svh; }
-    .section-head { width: min(var(--content-width), calc(100% - 180px)); margin: 0 0 32px 180px; }
-    h2 { max-width: 15ch; font-size: clamp(2rem, 5vw, 4.2rem); line-height: .98; letter-spacing: -.055em; }
-    .section-intro { max-width: 100%; margin-top: 15px; color: var(--text-dim); }
-    .section-intro a { color: inherit; text-decoration: none; transition: color .25s var(--ease); }
-    .section-intro a:hover, .section-intro a:focus-visible { color: var(--accent); }
-    .content-label { width: min(var(--content-width), calc(100% - 180px)); margin: 0 0 16px 180px; font-size: clamp(1.55rem, 3vw, 2rem); font-weight: 650; line-height: 1.15; letter-spacing: -.035em; }
+    .hero-foot { position: absolute; left: var(--edge); bottom: max(var(--edge), env(safe-area-inset-bottom)); --d: 5; display: grid; gap: 14px; justify-items: start; }
+    .scroll-cue { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); font: 500 .7rem/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; text-decoration: none; }
+    .cue-line { position: relative; display: block; width: 1px; height: 46px; overflow: hidden; background: color-mix(in srgb, currentColor 18%, transparent); order: -1; }
+    .cue-line::after { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 46%; background: currentColor; animation: cue 2.2s var(--ease) infinite; }
+    @keyframes cue { from { transform: translateY(-100%); } to { transform: translateY(220%); } }
 
-    .timeline { --beam-color: var(--accent); position: relative; isolation: isolate; width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; padding: 30px 32px 30px 52px; border: 1px solid transparent; border-radius: var(--radius); background: var(--surface); box-shadow: inset 0 0 0 1px var(--border); backdrop-filter: blur(10px); }
-    .timeline::before { content: ""; position: absolute; top: 42px; bottom: 44px; left: 31px; width: 1px; background: linear-gradient(var(--accent), rgba(200,255,0,.16)); transform: scaleY(0); transform-origin: top; transition: transform 1.2s .25s var(--ease); }
+    /* Staggered hero entrance */
+    .hero-enter { opacity: 0; translate: 0 14px; transition: opacity .9s var(--ease-out), translate .9s var(--ease-out); transition-delay: var(--in, .5s); }
+    body.loaded .hero-enter { opacity: 1; translate: 0 0; }
+
+    /* ───────────── JOURNEY (scroll-drawn line) ───────────── */
+    .journey { position: relative; isolation: isolate; }
+    .journey-svg { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .journey-track { fill: none; stroke: var(--text); stroke-opacity: .13; stroke-width: 1; stroke-dasharray: 2 7; stroke-linecap: round; transition: stroke .9s var(--ease); }
+    .journey-line { fill: none; stroke: var(--journey); stroke-width: 1.6; stroke-linecap: round; transition: stroke .9s var(--ease); }
+    .journey-tip { fill: var(--journey); transition: fill .9s var(--ease); }
+    .journey-tip-halo { fill: var(--journey); opacity: .18; transform-box: fill-box; transform-origin: center; animation: halo 1.8s var(--ease) infinite; transition: fill .9s var(--ease); }
+    @keyframes halo { 0% { transform: scale(.6); opacity: .32; } 100% { transform: scale(2.2); opacity: 0; } }
+    .journey-node { fill: var(--bg); stroke: var(--text); stroke-opacity: .35; stroke-width: 1.2; transform-box: fill-box; transform-origin: center; transition: fill .45s var(--ease), stroke .45s var(--ease), stroke-opacity .45s, transform .6s var(--ease-out), background-color .9s; }
+    .journey-node.is-major { stroke-width: 1.4; }
+    .journey-node.is-on { fill: var(--node-on); stroke: var(--text); stroke-opacity: 1; transform: scale(1.25); }
+    .journey > section { position: relative; z-index: 1; }
+
+    section { padding-block: 120px; scroll-margin-top: 72px; }
+    #about { padding-top: 136px; }
+    .section-head { width: min(var(--content-width), calc(100% - 180px)); margin: 0 0 36px 180px; }
+    .section-index { display: block; margin-bottom: 14px; color: var(--text-dim); font: .7rem/1 var(--mono); letter-spacing: .18em; transition: color .9s var(--ease); }
+    h2 { max-width: 15ch; font-family: var(--serif); font-size: clamp(2.7rem, 6.4vw, 5.4rem); font-weight: 500; line-height: .95; letter-spacing: -.025em; transition: color .9s var(--ease); }
+    .section-intro { max-width: 60ch; margin-top: 22px; color: var(--text-dim); font-size: clamp(1rem, 1.35vw, 1.1rem); line-height: 1.65; transition: color .9s var(--ease); }
+    .section-intro a { color: var(--text); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; text-underline-offset: 3px; text-decoration-skip-ink: none; transition: color .25s var(--ease), background-color .25s var(--ease); }
+    .section-intro a:hover, .section-intro a:focus-visible { background: var(--accent); color: #08080a; }
+    body.music-mode .section-intro a { text-decoration-color: var(--music); }
+    .content-label { width: min(var(--content-width), calc(100% - 180px)); margin: 0 0 18px 180px; font-size: clamp(1.4rem, 2.6vw, 1.85rem); font-weight: 600; line-height: 1.15; letter-spacing: -.035em; transition: color .9s var(--ease); }
+
+    .timeline { --beam-color: var(--violet-deep); position: relative; isolation: isolate; width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; padding: 30px 32px 30px 52px; border: 1px solid transparent; border-radius: var(--radius); background: var(--surface); box-shadow: inset 0 0 0 1px var(--border); transition: background-color .9s var(--ease), box-shadow .9s var(--ease); }
+    body.music-mode .timeline { --beam-color: var(--music); }
+    .timeline::before { content: ""; position: absolute; top: 42px; bottom: 44px; left: 31px; width: 1px; background: linear-gradient(var(--text), transparent); opacity: .35; transform: scaleY(0); transform-origin: top; transition: transform 1.2s .25s var(--ease); }
     .timeline.visible::before { transform: scaleY(1); }
     .step { position: relative; display: grid; grid-template-columns: 94px 1fr; gap: 22px; padding-bottom: 42px; }
     .step:last-child { padding-bottom: 0; }
-    .timeline-dot { position: absolute; top: 6px; left: -28px; z-index: 2; width: 14px; height: 14px; border: 3px solid var(--bg-2); border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 0 18px color-mix(in srgb, var(--accent) 58%, transparent); }
-    .step time { padding-top: 3px; color: var(--text-dim); font: .7rem/1.4 var(--mono); }
-    .step h3 { margin-bottom: 3px; font-size: 1.24rem; line-height: 1.2; letter-spacing: -.025em; }
-    .step h3 a { color: inherit; text-decoration: none; }
-    .step h3 a:hover { color: var(--accent); }
-    .step .place { margin-bottom: 4px; color: var(--accent); font: .68rem/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
-    .step .place a { color: inherit; text-decoration: none; }
+    .timeline-dot { position: absolute; top: 6px; left: -28px; z-index: 2; width: 14px; height: 14px; border: 1.5px solid var(--text); border-radius: 50%; background: var(--accent); transition: border-color .9s var(--ease); }
+    .step time { padding-top: 3px; color: var(--text-dim); font: .7rem/1.4 var(--mono); transition: color .9s var(--ease); }
+    .step h3 { margin-bottom: 4px; font-size: 1.24rem; line-height: 1.25; letter-spacing: -.025em; }
+    .step h3 a { text-decoration: none; transition: color .25s; }
+    .step h3 a:hover { color: var(--violet-deep); }
+    body.music-mode .step h3 a:hover { color: var(--accent); }
+    .step .place { margin-bottom: 6px; color: var(--text-dim); font: .68rem/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+    .step .place a { text-decoration: none; }
     .step .place a:hover { color: var(--text); }
-    .step p { max-width: 58ch; color: var(--text-dim); font-size: .92rem; }
-    .thesis { display: inline-flex; margin-top: 3px; color: var(--text); font: .7rem/1.3 var(--mono); text-decoration-color: var(--accent); text-underline-offset: 4px; }
-    .thesis:hover { color: var(--accent); }
+    .step-note { margin-bottom: 8px; color: var(--text-dim); font-size: .88rem; line-height: 1.5; transition: color .9s var(--ease); }
+    .step-note em { color: var(--text); font-style: italic; transition: color .9s var(--ease); }
+    .timeline + .content-label, .projects + .content-label { margin-top: 64px; }
+
+    /* Projects: interactive card stack (drag-to-back, click-to-back, random tilt) */
+    .projects { display: flex; align-items: flex-end; gap: 28px; width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; padding-top: 26px; }
+    .card-stack { position: relative; flex: 0 0 auto; width: min(340px, calc(100% - 72px)); aspect-ratio: 4 / 5; perspective: 1000px; touch-action: pan-y; container-type: inline-size; }
+    .stack-card { --depth: 0; --rot: 0deg; --dx: 0px; --dy: 0px; --rx: 0deg; --ry: 0deg; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 8cqw 7.5cqw; overflow: hidden; border: 1px solid rgba(14,14,16,.08); border-radius: 30px; box-shadow: 0 30px 60px rgba(14,14,16,.1), 0 2px 6px rgba(14,14,16,.05); cursor: grab; user-select: none; -webkit-user-select: none; transform-origin: 50% 60%;
+      transform: translate3d(var(--dx), calc(var(--depth) * -14px + var(--dy)), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot)) scale(calc(1 - var(--depth) * .05));
+      opacity: calc(1 - var(--depth) * .15);
+      transition: transform .75s cubic-bezier(.3,1.45,.45,1), opacity .5s var(--ease), box-shadow .4s var(--ease); }
+    .stack-card.is-dragging { cursor: grabbing; transition: opacity .5s var(--ease), box-shadow .4s var(--ease); box-shadow: 0 40px 80px rgba(14,14,16,.16); }
+    .stack-card-art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    .stack-card > :not(.stack-card-art) { position: relative; z-index: 1; }
+    .stack-card-org { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; font-size: clamp(.9rem, 5cqw, 1.05rem); font-weight: 600; letter-spacing: -.01em; text-decoration: none; }
+    .stack-card-org:hover .ne-arrow, .stack-card-org:focus-visible .ne-arrow { transform: translate(3px, -3px); }
+    .stack-card-title { display: block; width: max-content; font: 500 15.5cqw/.9 var(--serif); letter-spacing: -.03em; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat; padding-bottom: .06em; transition: background-size .5s var(--ease-out); }
+    .stack-card-title:hover, .stack-card-title:focus-visible { background-size: 100% 2px; }
+    .stack-card-place { margin-top: 12px; font: .72rem/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
+    .stack-card a { -webkit-user-drag: none; }
+    .stack-card--paper { background: #fff; color: var(--ink); }
+    .stack-card--paper .stack-card-art { background: radial-gradient(circle, rgba(14,14,16,.2) 1px, transparent 1.5px) 0 0 / 18px 18px; -webkit-mask-image: radial-gradient(120% 70% at 80% 30%, #000, transparent 70%); mask-image: radial-gradient(120% 70% at 80% 30%, #000, transparent 70%); }
+    .stack-card--ink { background: #0e0e10; color: #f4f4f6; border-color: rgba(255,255,255,.08); }
+    .stack-card--ink .stack-card-title { color: var(--accent); }
+    .stack-card--ink .stack-card-art { background: repeating-radial-gradient(circle at 100% 0%, transparent 0 22px, rgba(200,255,0,.2) 22px 23px); -webkit-mask-image: linear-gradient(200deg, #000 20%, transparent 75%); mask-image: linear-gradient(200deg, #000 20%, transparent 75%); }
+    .stack-card--lime { background: var(--accent); color: var(--ink); }
+    .stack-card--lime .stack-card-art { background: repeating-linear-gradient(-45deg, transparent 0 13px, rgba(14,14,16,.1) 13px 14px); -webkit-mask-image: linear-gradient(to bottom, #000 10%, transparent 62%); mask-image: linear-gradient(to bottom, #000 10%, transparent 62%); }
+    .stack-shuffle { display: grid; place-items: center; flex: 0 0 auto; width: 46px; height: 46px; margin-bottom: 6px; border: 1px solid var(--border); border-radius: 50%; background: var(--bg); color: var(--text); cursor: pointer; box-shadow: 0 8px 20px rgba(14,14,16,.08); transition: transform .25s var(--ease-out), border-color .25s, background-color .9s var(--ease), color .9s var(--ease); }
+    .stack-shuffle:hover { transform: scale(1.08); border-color: var(--border-hi); }
+    .stack-shuffle:active { transform: scale(.94); }
+    .stack-shuffle svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .5s var(--ease-out); }
+    .stack-shuffle:hover svg { transform: rotate(180deg); }
+    .thesis { display: inline-flex; margin-top: 3px; color: var(--text); font: .72rem/1.3 var(--mono); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 4px; transition: color .25s; }
+    .thesis:hover { color: var(--violet-deep); }
 
     #music { --accent: var(--music); }
-    .releases { width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; }
+    .releases { position: relative; z-index: 6; width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; }
     .release-card { --beam-color: var(--music); position: relative; isolation: isolate; display: grid; grid-template-columns: 148px minmax(0,1fr) auto; align-items: center; width: 100%; overflow: hidden; border: 1px solid transparent; border-radius: var(--radius); background: linear-gradient(120deg, rgba(179,136,255,.11), var(--surface) 48%); color: var(--text); font: inherit; text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--border); backdrop-filter: blur(10px); transition: transform .55s var(--ease), background .45s var(--ease), box-shadow .55s var(--ease); }
     .release-card:hover, .release-card:focus-visible, .release-card[aria-expanded="true"] { transform: translateY(-3px); background: linear-gradient(120deg, rgba(179,136,255,.18), var(--surface-hover) 48%); box-shadow: inset 0 0 0 1px rgba(179,136,255,.2), 0 18px 50px rgba(0,0,0,.26), 0 0 34px rgba(179,136,255,.08); outline: none; }
     .release-cover-wrap { align-self: stretch; aspect-ratio: 1; overflow: hidden; }
@@ -151,21 +259,22 @@
     .release-card-copy strong { display: block; font-size: clamp(1.3rem,3vw,2rem); line-height: 1.05; letter-spacing: -.045em; }
     .release-card-copy small { display: block; margin-top: 7px; color: var(--text-dim); font: .72rem/1.4 var(--mono); }
     .release-open { display: grid; place-items: center; width: 46px; height: 46px; margin-right: 24px; padding-left: 3px; border: 1px solid var(--border-hi); border-radius: 50%; color: var(--music); font-size: .95rem; transition: transform .4s var(--ease), color .3s, background .3s; }
-    .release-card:hover .release-open, .release-card:focus-visible .release-open { transform: scale(1.07); background: var(--music); color: var(--bg); box-shadow: 0 0 22px rgba(179,136,255,.28); }
-    .release-card[aria-expanded="true"] .release-open { transform: rotate(90deg); background: var(--music); color: var(--bg); box-shadow: 0 0 26px rgba(179,136,255,.32); }
 
-    .release-panel { display: grid; grid-template-rows: 0fr; margin-top: 0; opacity: 0; transform: translateY(-12px); visibility: hidden; transition: grid-template-rows .52s var(--ease), margin-top .52s var(--ease), opacity .35s var(--ease), transform .52s var(--ease), visibility 0s .52s; }
-    .release-panel.is-open { grid-template-rows: 1fr; margin-top: 14px; opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
-    .release-panel-inner { min-height: 0; overflow: hidden; }
-    .release-panel-shell { padding: 24px; border: 1px solid rgba(255,255,255,.12); border-radius: 26px; background: linear-gradient(145deg, rgba(179,136,255,.11), rgba(14,14,17,.98) 34%); box-shadow: 0 24px 70px rgba(0,0,0,.35); }
+    .release-card:hover .release-open, .release-card:focus-visible .release-open { transform: rotate(360deg) scale(1.08); background: var(--music); color: #08080a; }
+    .release-card:focus-visible { outline: 2px solid var(--music); outline-offset: 3px; }
+    /* Floating dropdown: it overlays the content below instead of pushing it, so nothing (journey line included) reflows. */
+    .release-panel { position: absolute; top: calc(100% + 12px); left: 0; right: 0; z-index: 10; opacity: 0; visibility: hidden; transform: translateY(-8px) scale(.985); transform-origin: 50% 0; pointer-events: none; transition: opacity .16s var(--ease), transform .22s var(--ease-out), visibility 0s .22s; }
+    .release-panel.is-open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition: opacity .18s var(--ease), transform .26s var(--ease-out), visibility 0s; }
+    .release-panel-shell { padding: 22px; border: 1px solid rgba(255,255,255,.12); border-radius: 24px; background: linear-gradient(145deg, #1c1628, #0e0e11 38%); box-shadow: 0 30px 80px rgba(0,0,0,.55); }
     .release-platform-label { margin: 0 0 14px; color: var(--text-dim); font: .7rem/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
     .release-platforms { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
-    .platform-row { display: flex; align-items: center; gap: 11px; min-height: 58px; padding: 9px 9px 9px 12px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,.025); opacity: 0; transform: translateY(12px); }
-    .release-panel.is-open .platform-row { animation: platform-in .52s var(--delay) var(--ease) forwards; }
+    .platform-row { display: flex; align-items: center; gap: 11px; min-height: 58px; padding: 9px 9px 9px 12px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,.025); opacity: 0; transform: translateY(6px); }
+    .release-panel.is-open .platform-row { animation: platform-in .28s var(--delay) var(--ease-out) forwards; }
     @keyframes platform-in { to { opacity: 1; transform: none; } }
     .platform-mark { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; border-radius: 10px; background: rgba(255,255,255,.08); color: var(--text); }
     .platform-mark svg { width: 21px; height: 21px; overflow: visible; }
     .platform-mark path, .platform-mark circle, .platform-mark rect, .platform-mark polygon { vector-effect: non-scaling-stroke; }
+    .platform-mark--youtube { background: #ff0033; color: #fff; }
     .platform-mark--apple { background: linear-gradient(145deg,#fa466a,#9c55ff); }
     .platform-mark--spotify { background: #1ed760; color: #071108; }
     .platform-mark--soundcloud { background: #ff5500; color: #fff; }
@@ -177,23 +286,28 @@
     .platform-listen { flex: 0 0 auto; padding: 8px 11px; border-radius: 999px; background: var(--text); color: var(--bg); font: 700 .64rem/1 var(--mono); text-decoration: none; text-transform: uppercase; transition: transform .25s var(--ease), background .25s, color .25s; }
     .platform-listen:hover, .platform-listen:focus-visible { transform: translateY(-2px); background: var(--music); color: var(--bg); outline: none; }
     .live-sets-heading { margin-top: 76px; }
-    .sets { display: grid; grid-template-columns: repeat(2, 1fr); width: min(var(--content-width), calc(100% - 180px)); gap: 14px; margin-left: 180px; }
-    .set-card { --beam-color: var(--music); position: relative; isolation: isolate; display: block; aspect-ratio: 16/9; overflow: hidden; border: 1px solid transparent; border-radius: var(--radius); background: var(--bg-2); color: #fff; text-decoration: none; box-shadow: inset 0 0 0 1px var(--border); transition: transform .5s var(--ease), border-color .3s; transition-delay: var(--delay,0ms); }
-    .set-card:hover { transform: translateY(-3px); border-color: var(--border-hi); }
-    .set-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.85) brightness(.7); transition: transform .55s var(--ease), filter .55s; }
-    .set-card:hover img { transform: scale(1.05); filter: grayscale(.15) brightness(.76); }
-    .set-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,.88)); }
-
-    .timeline::after, .release-card::before, .set-card::before { content: ""; position: absolute; inset: 0; z-index: 4; padding: 1px; border-radius: inherit; background: conic-gradient(from var(--beam-angle), transparent 0 36%, color-mix(in srgb, var(--beam-color) 30%, transparent) 42%, var(--beam-color) 48%, rgba(255,255,255,.96) 50%, var(--beam-color) 52%, color-mix(in srgb, var(--beam-color) 30%, transparent) 58%, transparent 64% 100%); opacity: .72; pointer-events: none; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: light-beam-spin 3.4s linear infinite; animation-play-state: paused; }
-    .timeline.visible::after, .releases.visible .release-card::before, .set-card.visible::before { animation-play-state: running; }
-    .timeline:hover::after, .release-card:hover::before, .release-card:focus-visible::before, .set-card:hover::before, .set-card:focus-visible::before { opacity: 1; filter: drop-shadow(0 0 7px color-mix(in srgb, var(--beam-color) 55%, transparent)); }
-
-    .official-video-card { width: 100%; margin-top: 14px; }
-    .set-info { position: absolute; z-index: 2; inset: auto 18px 16px; display: flex; align-items: end; justify-content: space-between; gap: 16px; }
-    .set-info strong { display: block; font-size: .95rem; }
-    .set-info small { color: rgba(255,255,255,.68); font: .66rem/1.4 var(--mono); }
-    .play { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px; border: 1px solid rgba(255,255,255,.34); border-radius: 50%; background: rgba(0,0,0,.35); backdrop-filter: blur(6px); transition: transform .4s var(--ease), background .4s; }
-    .set-card:hover .play { transform: rotate(360deg) scale(1.08); background: var(--accent); color: #08080a; }
+    /* Live sets: WebGL circular gallery — 16:9 covers on a bent, inertial track */
+    .cgallery { position: relative; }
+    .cgallery-stage { position: relative; width: 100vw; height: clamp(300px, 36vw, 520px); margin-left: calc(50% - 50vw); cursor: grab; touch-action: pan-y; outline: none; user-select: none; -webkit-user-select: none; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); opacity: 0; transition: opacity .9s var(--ease); }
+    .cgallery.is-ready .cgallery-stage { opacity: 1; }
+    .cgallery-stage.is-dragging { cursor: grabbing; }
+    .cgallery-stage.is-over-card { cursor: pointer; }
+    .cgallery-stage canvas { display: block; width: 100%; height: 100%; }
+    .cgallery-stage:focus-visible { box-shadow: inset 0 0 0 2px var(--music); }
+    .cgallery-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: min(var(--content-width), calc(100% - 180px)); margin: 6px 0 0 180px; }
+    .cgallery-caption { display: flex; align-items: baseline; gap: 14px; min-width: 0; color: var(--text-dim); font: .72rem/1.4 var(--mono); letter-spacing: .08em; }
+    .cgallery-index { flex: 0 0 auto; color: var(--text); white-space: nowrap; }
+    .cgallery-controls { display: flex; gap: 8px; }
+    .cgallery-controls button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--border-hi); border-radius: 50%; background: transparent; color: var(--text); cursor: pointer; transition: transform .25s var(--ease-out), background-color .25s, color .25s; }
+    .cgallery-controls button:hover { background: var(--music); color: #08080a; transform: scale(1.06); }
+    .cgallery-controls button:active { transform: scale(.94); }
+    .cgallery-controls svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .cgallery-list { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; list-style: none; }
+    /* No WebGL: plain 16:9 grid */
+    .cgallery.is-fallback .cgallery-stage, .cgallery.is-fallback .cgallery-foot { display: none; }
+    .cgallery.is-fallback .cgallery-list { position: static; width: min(var(--content-width), calc(100% - 180px)); height: auto; margin-left: 180px; overflow: visible; clip-path: none; white-space: normal; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .cgallery.is-fallback .cgallery-list a { display: grid; gap: 8px; color: var(--text); font-size: .8rem; text-decoration: none; }
+    .cgallery.is-fallback .cgallery-list img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px; }
     .music-links { display: flex; flex-wrap: wrap; width: min(var(--content-width), calc(100% - 180px)); gap: 9px; margin: 20px 0 0 180px; }
 
     .equipment-heading { margin-top: 76px; }
@@ -211,77 +325,81 @@
     .equipment-callout--headphones { top: 7%; left: 55.5%; }
     .equipment-callout--x1850 { bottom: 7%; left: 39.5%; }
     .equipment-callout--sc6000 { top: 8%; right: 2.5%; text-align: right; }
+    .timeline::after, .release-card::before { content: ""; position: absolute; inset: 0; z-index: 4; padding: 1px; border-radius: inherit; background: conic-gradient(from var(--beam-angle), transparent 0 36%, color-mix(in srgb, var(--beam-color) 30%, transparent) 42%, var(--beam-color) 48%, rgba(255,255,255,.96) 50%, var(--beam-color) 52%, color-mix(in srgb, var(--beam-color) 30%, transparent) 58%, transparent 64% 100%); opacity: .72; pointer-events: none; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: light-beam-spin 3.4s linear infinite; animation-play-state: paused; }
+    .timeline::after { opacity: .45; }
+    .timeline.visible::after, .releases.visible .release-card::before { animation-play-state: running; }
+    .timeline:hover::after, .release-card:hover::before, .release-card:focus-visible::before { opacity: 1; filter: drop-shadow(0 0 7px color-mix(in srgb, var(--beam-color) 55%, transparent)); }
+    .play { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px; border: 1px solid rgba(255,255,255,.34); border-radius: 50%; background: rgba(0,0,0,.35); color: #fff; backdrop-filter: blur(6px); transition: transform .4s var(--ease), background .4s; }
 
-    footer { min-height: 230px; padding: 54px 0 22px; border-top: 1px solid var(--border); background: var(--chrome); backdrop-filter: blur(16px); }
-    .footer-inner { min-height: 154px; display: flex; flex-direction: column; align-items: center; color: var(--text-dim); }
-    .footer-social-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px; }
-    .footer-social-links .social-link { width: 30px; height: 30px; border: 0; background: transparent; color: var(--text); backdrop-filter: none; }
-    .footer-social-links .social-link:hover { background: transparent; }
-    .footer-social-links .social-link.is-disabled { color: var(--text-dim); }
-    .footer-meta { width: 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-top: 26px; }
-    .footer-copyright { grid-column: 2; color: var(--text); font: 500 .72rem/1.4 var(--sans); letter-spacing: .015em; white-space: nowrap; }
-    .footer-built { grid-column: 3; justify-self: end; color: var(--text-dim); font: 500 .72rem/1.4 var(--sans); letter-spacing: .015em; white-space: nowrap; }
+    footer { position: relative; z-index: 1; padding: 64px 0 26px; border-top: 1px solid rgba(255,255,255,.08); background: rgba(8,8,10,.86); color: #f4f4f6; backdrop-filter: blur(16px); }
+    .footer-inner { display: flex; flex-direction: column; align-items: center; color: #8a8a93; }
+    .footer-signature { margin-bottom: 30px; color: #f4f4f6; font: italic 400 clamp(2.4rem, 7vw, 4.6rem)/1 var(--serif); letter-spacing: -.035em; }
+    .footer-social-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
+    .footer-social-links .social-link { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: #f4f4f6; text-decoration: none; transition: transform .3s var(--ease-out), color .25s; }
+    .footer-social-links .social-link:hover { transform: translateY(-2px); color: var(--music); }
+    .footer-social-links .social-link svg { width: 19px; height: 19px; fill: currentColor; }
+    .footer-social-links .spotify-wave { stroke: #0b0b0e; }
+    .footer-meta { width: 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-top: 34px; }
+    .footer-copyright { grid-column: 2; color: #f4f4f6; font: 500 .72rem/1.4 var(--sans); letter-spacing: .015em; white-space: nowrap; }
+    .footer-built { grid-column: 3; justify-self: end; color: #8a8a93; font: 500 .72rem/1.4 var(--sans); letter-spacing: .015em; white-space: nowrap; }
     .language-switcher { grid-column: 1; grid-row: 1; justify-self: start; display: inline-flex; align-items: center; gap: 16px; }
-    .language-switcher button { position: relative; height: 24px; padding: 0; overflow: hidden; border: 0; background: transparent; color: var(--text); font: 500 1.25rem/24px var(--sans); text-transform: uppercase; opacity: .4; cursor: pointer; transition: opacity .3s var(--ease); }
+    .language-switcher button { position: relative; height: 24px; padding: 0; overflow: hidden; border: 0; background: transparent; color: #f4f4f6; font: 500 1.1rem/24px var(--sans); text-transform: uppercase; opacity: .4; cursor: pointer; transition: opacity .3s var(--ease); }
     .language-switcher button span, .language-switcher button::after { display: block; transition: transform .42s var(--ease); }
     .language-switcher button::after { content: attr(data-label); position: absolute; top: 100%; left: 0; }
     .language-switcher button:hover, .language-switcher button:focus-visible { opacity: 1; }
     .language-switcher button:hover span, .language-switcher button:focus-visible span, .language-switcher button:hover::after, .language-switcher button:focus-visible::after { transform: translateY(-100%); }
     .language-switcher button[aria-pressed="true"] { opacity: 1; }
-    .reveal { opacity: 0; transform: translateY(44px) scale(.985); filter: blur(8px); clip-path: inset(0 0 10% 0); transition: opacity .85s var(--ease), transform .85s var(--ease), filter .85s var(--ease), clip-path .85s var(--ease); transition-delay: 0ms; }
-    .reveal.visible { opacity: 1; transform: none; filter: none; clip-path: inset(0); transition-delay: var(--delay,0ms); }
+
+    .reveal { opacity: 0; transform: translateY(36px); filter: blur(6px); transition: opacity .85s var(--ease), transform .85s var(--ease-out), filter .85s var(--ease), color .9s var(--ease), background-color .9s var(--ease), box-shadow .9s var(--ease); transition-delay: 0ms; }
+    .reveal.visible { opacity: 1; transform: none; filter: none; transition-delay: var(--delay,0ms), var(--delay,0ms), var(--delay,0ms), 0ms, 0ms, 0ms; }
     body.language-swap [data-i18n], body.language-swap [data-i18n-html] { animation: language-in .48s var(--ease); }
     @keyframes language-in { from { opacity: 0; transform: translateY(8px); filter: blur(5px); } to { opacity: 1; transform: none; filter: none; } }
 
+    /* ───────────── RESPONSIVE ───────────── */
+    /* Portrait screens: size the 16:9 frame so the figure fills the width, anchored to the bottom */
+    @media (max-aspect-ratio: 1/1) {
+      .hero-img { width: min(230vw, calc(max(100svh, 560px) * 1.3)); }
+    }
     @media (min-width: 761px) and (max-width: 1080px) {
-      .hero { grid-template-columns: 430px minmax(0, 1fr); }
-      .profile-wrap { width: 430px; }
-      .profile-frame { width: 380px; }
-      .profile-wrap::after { top: 95px; left: 75px; width: 280px; height: 280px; }
-      .section-head, .content-label, .timeline, .releases, .sets, .music-links, .equipment-board {
-        margin-inline: auto;
-      }
+      .section-head, .content-label, .timeline, .projects, .releases, .cgallery-foot, .music-links, .equipment-board { margin-inline: auto; }
     }
     @media (max-width: 760px) {
       .wrap { width: min(var(--maxw), calc(100% - 28px)); }
-      .nav-inner { min-height: 66px; }
-      .nav-links { min-width: 0; overflow-x: auto; scrollbar-width: none; }
-      .nav-links::-webkit-scrollbar { display: none; }
-      .nav-links a { flex: 0 0 auto; padding: 8px 7px; }
-      .hero { min-height: calc(100svh - 66px); grid-template-columns: minmax(0,1fr); justify-items: center; align-content: center; gap: 28px; padding-block: clamp(28px, 6svh, 58px); }
-      .profile-wrap { width: 330px; }
-      .profile-frame { width: 260px; border-radius: 22px; }
-      .profile-wrap::after { top: 63px; left: 65px; width: 200px; height: 200px; border-radius: 21px; }
-      .hero > div { text-align: center; }
-      h1 { font-size: clamp(3.7rem, 9.5vw, 5rem); }
-      .name-cycle { margin-inline: auto; }
-      .name-cycle .name-block { justify-self: center; }
-      .hero-copy { margin: 18px auto 0; }
-      .social-links { justify-content: center; }
-      section { padding-block: 68px; }
-      .section-head, .content-label, .timeline, .releases, .sets, .music-links, .equipment-board { width: 100%; margin-left: 0; }
+      .journey .wrap { padding-left: 26px; }
+      .hero-title { max-width: 62vw; }
+      .hero-title { --name-size: clamp(2.7rem, 13.2vw, 4.4rem); }
+      .hero-role { max-width: 22ch; }
+      .hero-nav { gap: 4px; }
+      .hero-nav a { font-size: .95rem; gap: 6px; }
+      .cue-line { height: 36px; }
+      .hero-social { right: calc(var(--edge) - 12px); gap: 0; }
+      .hero-social .social-link { width: 36px; height: 36px; }
+      .hero-social .social-link svg { width: 17px; height: 17px; }
+      .nav-links a { padding: 8px 11px; font-size: .85rem; }
+      section { padding-block: 76px; }
+      #about { padding-top: 92px; }
+      .section-head, .content-label, .timeline, .projects, .releases, .cgallery-foot, .music-links, .equipment-board { width: 100%; margin-left: 0; }
+      .projects { gap: 16px; }
+      .cgallery-stage { margin-left: calc(50% - 50vw - 13px); }
+      .cgallery-caption { flex-direction: column; gap: 2px; }
+      .cgallery.is-fallback .cgallery-list { width: 100%; margin-left: 0; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .timeline + .content-label, .projects + .content-label { margin-top: 48px; }
       .timeline { padding: 26px 22px 26px 46px; }
       .timeline::before { left: 27px; }
       .step { grid-template-columns: 1fr; gap: 4px; }
       .timeline-dot { left: -26px; }
-      .sets { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 10px; margin-inline: auto; }
-      .set-info { inset: auto clamp(8px, 2vw, 14px) clamp(7px, 1.8vw, 12px); gap: 6px; }
-      .set-info strong { font-size: clamp(.62rem, 2.3vw, .85rem); line-height: 1.15; }
-      .set-info small { font-size: clamp(.46rem, 1.5vw, .6rem); }
       .play { width: clamp(26px, 7vw, 36px); height: clamp(26px, 7vw, 36px); flex-basis: clamp(26px, 7vw, 36px); font-size: .72rem; }
-      .equipment-board { aspect-ratio: 2400 / 813; overflow: hidden; }
-      .equipment-rig { position: absolute; inset: 0; width: auto; height: auto; }
       .equipment-photo { object-fit: contain; }
       .equipment-callout { padding: 4px 6px; font-size: clamp(.5rem, 1.8vw, .62rem); }
-      footer { min-height: 0; padding: 58px 0 30px; overflow: hidden; background: #050509; backdrop-filter: none; }
-      .footer-inner { min-height: 0; align-items: stretch; }
-      .footer-social-links { justify-content: space-between; gap: 0; margin-bottom: 58px; }
-      .footer-social-links .social-link { width: 30px; height: 30px; }
-      .footer-meta { display: flex; flex-direction: column; align-items: flex-start; width: 100%; margin-top: 0; }
+      .equipment-callout--headphones { left: 49%; }
+      footer { padding: 58px 0 30px; overflow: hidden; background: #050509; backdrop-filter: none; }
+      .footer-inner { align-items: stretch; }
+      .footer-signature { margin-bottom: 26px; }
+      .footer-social-links { justify-content: space-between; gap: 0; margin-bottom: 46px; }
+      .footer-meta { display: flex; flex-direction: column; align-items: flex-start; margin-top: 0; }
       .language-switcher { order: 1; gap: 18px; }
-      .language-switcher button { height: 25px; font-size: 1.15rem; line-height: 25px; }
-      .footer-copyright { order: 2; margin-top: 48px; color: var(--text); font: 600 .72rem/1.5 var(--sans); letter-spacing: .035em; white-space: normal; text-transform: uppercase; }
-      .footer-built { order: 3; margin-top: 8px; color: var(--text-dim); font: .7rem/1.5 var(--mono); white-space: normal; }
+      .footer-copyright { order: 2; margin-top: 40px; font: 600 .72rem/1.5 var(--sans); letter-spacing: .035em; white-space: normal; text-transform: uppercase; }
+      .footer-built { order: 3; margin-top: 8px; font: .7rem/1.5 var(--mono); white-space: normal; }
     }
     @media (max-width: 430px) {
       .release-card { grid-template-columns: 104px minmax(0,1fr) auto; }
@@ -289,59 +407,68 @@
       .release-open { width: 36px; height: 36px; margin-right: 12px; font-size: .78rem; }
       .release-panel-shell { padding: 18px; border-radius: 20px; }
       .release-platforms { grid-template-columns: 1fr; }
-      .social-links { gap: 5px; }
-      .social-link { width: 40px; height: 40px; }
-      .footer-social-links .social-link { width: 27px; height: 27px; }
-      .footer-copyright { font-size: .66rem; }
-      .footer-built { font-size: .64rem; }
+      .hero-social .social-link { width: 33px; height: 33px; }
       .equipment-callout { font-size: .5rem; }
     }
-    @media (prefers-reduced-motion: reduce) and (min-width: 761px) {
+    @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .blob, .profile-wrap::after { animation: none; transition: none; }
-      h1, .reveal { opacity: 1; transform: none; filter: none; clip-path: none; transition: none; }
-      .name-block { animation: none; }
+      .mesh-blob, .cue-line::after, .journey-tip-halo { animation: none; }
+      .name-line > span, .hero-role { animation: none !important; }
       .name-block--alias { display: none; }
-      .social-link--music:hover, .social-link--music:focus-visible { animation: none; }
-      .timeline::after, .release-card::before, .set-card::before { opacity: .65; animation: none !important; }
+      .name-cycle, .hero-img, .hero-enter, .reveal { transition-duration: .01ms !important; transition-delay: 0s !important; }
+      .reveal { opacity: 1; transform: none; filter: none; }
+      .timeline::after, .release-card::before { opacity: .65; animation: none !important; }
       .release-panel { transition: none; }
+      .stack-card { transition: opacity .2s; }
+      .cgallery-stage { transition: none; }
       .release-panel.is-open .platform-row { animation: none; opacity: 1; transform: none; }
-      .language-switcher button span, .language-switcher button::after { transition: none; }
       body.language-swap [data-i18n], body.language-swap [data-i18n-html] { animation: none; }
     }
   </style>
 </head>
 <body id="top">
-  <div class="scroll-progress" aria-hidden="true"></div>
-  <div class="bg-mesh" aria-hidden="true"><div class="blob blob-a"></div><div class="blob blob-b"></div></div>
+  <div class="bg-mesh" aria-hidden="true"><div class="mesh-blob mesh-blob-a"></div><div class="mesh-blob mesh-blob-b"></div></div>
   <div class="spotlight" aria-hidden="true"></div>
 
   <nav class="site-nav" aria-label="Main navigation">
-    <div class="wrap nav-inner">
-      <div class="nav-links">
-        <a href="#top" data-i18n="navHome">Home</a>
-        <a href="#about" data-i18n="navAbout">About</a>
-        <a href="https://github.com/kalkyril" data-i18n="navCode">Code</a>
-        <a href="#music" data-i18n="navMusic">Music</a>
-      </div>
+    <div class="nav-links">
+      <a href="#top" data-i18n="navHome">Home</a>
+      <a href="#about" data-i18n="navAbout">About</a>
+      <a href="https://github.com/kalkyril" data-i18n="navCode">Code</a>
+      <a href="#music" data-i18n="navMusic">Music</a>
     </div>
   </nav>
 
   <main>
-    <header class="wrap hero">
-      <figure class="profile-wrap reveal">
-        <div class="profile-frame">
-          <img class="profile" src="assets/kalkyril-profile.png" alt="kalkyril's avatar" width="1034" height="1131">
+    <header class="hero" id="hero">
+      <div class="hero-stage">
+        <!-- IMAGE ONE: base portrait (16:9). Swap the src to replace it. -->
+        <img class="hero-img profile" src="assets/hero-a.webp" alt="kalkyril's avatar" width="2011" height="1131" fetchpriority="high" decoding="async">
+      </div>
+      <canvas class="hero-waves" aria-hidden="true"></canvas>
+      <!-- IMAGE TWO: revealed by the blob cursor. data-bg = its background colour (fills outside the image on portrait screens). -->
+      <canvas class="hero-reveal" aria-hidden="true" data-src="assets/hero-b.webp" data-bg="#0b0b0e"></canvas>
+
+      <div class="hero-ui">
+        <div class="hero-title depth">
+          <h1 class="name-cycle" aria-label="Matteo Lugli — kalkyril">
+            <span class="name-block name-block--real" aria-hidden="true"><span class="name-line"><span>Matteo</span></span><span class="name-line"><span>Lugli</span></span></span>
+            <span class="name-block name-block--alias" aria-hidden="true"><span class="name-line"><span>kalkyril</span></span></span>
+          </h1>
+          <p class="hero-role hero-enter" style="--in:.9s" data-i18n="heroCopy">Math, code and music.</p>
         </div>
-      </figure>
-      <div class="reveal">
-        <p class="prompt" data-i18n-html="prompt">// math · <a href="https://github.com/kalkyril">code</a> · <a href="#music">music</a></p>
-        <h1 class="name-cycle" aria-label="Matteo Lugli — kalkyril">
-          <span class="name-block name-block--real" aria-hidden="true">Matteo Lugli</span>
-          <span class="name-block name-block--alias" aria-hidden="true">kalkyril</span>
-        </h1>
-        <p class="hero-copy" data-i18n="heroCopy">Mathematician, programmer and music producer.</p>
-        <div class="social-links" aria-label="Social profiles">
+
+        <nav class="hero-nav depth hero-enter" style="--in:.6s" aria-label="Sections">
+          <a href="#about"><span data-i18n="navAbout">About</span><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+          <a href="https://github.com/kalkyril"><span data-i18n="navCode">Code</span><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+          <a href="#music"><span data-i18n="navMusic">Music</span><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+        </nav>
+
+        <div class="hero-foot depth hero-enter" style="--in:1.1s">
+          <a class="scroll-cue" href="#about"><span class="cue-line" aria-hidden="true"></span><span data-i18n="scrollCue">Scroll</span></a>
+        </div>
+
+        <div class="hero-social social-links depth hero-enter" style="--in:1.2s" aria-label="Social profiles">
           <a class="social-link" href="https://instagram.com/kalkyril" aria-label="Instagram" title="Instagram — @kalkyril">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.12 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.12.66.66 1.33 1.08 2.12 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.12-1.38.66-.66 1.08-1.33 1.38-2.12.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.38-2.12C21.32 1.35 20.65.93 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32A6.16 6.16 0 0 0 12 5.84zm0 10.16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/></svg>
           </a>
@@ -369,46 +496,84 @@
               <path d="M11 17.5h8.2a3.3 3.3 0 0 0 .35-6.58A5.25 5.25 0 0 0 10 8.15v9.35z"/>
             </svg>
           </a>
-          <a class="social-link" href="https://letterboxd.com/matteolugli/" aria-label="Letterboxd" title="Letterboxd — @matteolugli">
-            <svg class="letterboxd-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <circle class="letterboxd-left" cx="7.1" cy="12" r="5.1"/>
-              <circle class="letterboxd-right" cx="16.9" cy="12" r="5.1"/>
-              <circle class="letterboxd-center" cx="12" cy="12" r="5.1"/>
-            </svg>
-          </a>
         </div>
       </div>
     </header>
 
+    <div class="journey" id="journey">
+      <svg class="journey-svg" aria-hidden="true">
+        <path class="journey-track"/>
+        <path class="journey-line"/>
+        <g class="journey-nodes"></g>
+        <circle class="journey-tip-halo" r="5"/>
+        <circle class="journey-tip" r="3.5"/>
+      </svg>
     <section id="about">
       <div class="wrap">
         <div class="section-head reveal">
           <div>
+            <span class="section-index">01</span>
             <h2 data-i18n="aboutTitle">About</h2>
             <p class="section-intro" data-i18n-html="aboutIntro">Write here self presentation.</p>
           </div>
         </div>
         <h3 class="content-label reveal" data-i18n="educationLabel">Education</h3>
-        <div class="timeline reveal" aria-label="Education timeline">
+        <div class="timeline reveal" aria-label="Education timeline" data-i18n-aria="educationAria">
           <article class="step reveal">
             <span class="timeline-dot" aria-hidden="true"></span>
-            <time datetime="2026">2026</time>
+            <time datetime="2026-09" data-i18n="mscDate">Sep 2026</time>
             <div>
-              <h3><a href="https://fim.unimore.it/it" data-i18n="mscTitle">MSc in Mathematics — Data Science</a></h3>
+              <h3><a href="https://fim.unimore.it/it" data-i18n="mscTitle">MSc cum laude in Mathematics (Data Science) [LM40]</a></h3>
               <p class="place"><a href="https://www.unimore.it/it" data-i18n="university">University of Modena and Reggio Emilia</a></p>
-              <a class="thesis" href="pdfs/MScThesis_MatteoLugli.pdf" data-i18n="mscThesis">MSc thesis coming soon</a>
+              <p class="step-note" data-i18n-html="mscThesisInfo">Thesis</p>
+              <a class="thesis" href="msc-thesis.html" data-i18n="mscThesis">Read my MSc thesis</a>
             </div>
           </article>
           <article class="step reveal">
             <span class="timeline-dot" aria-hidden="true"></span>
-            <time datetime="2024">2024</time>
+            <time datetime="2024-04" data-i18n="bscDate">Apr 2024</time>
             <div>
               <h3><a href="https://fim.unimore.it/it" data-i18n="bscTitle">BSc in Mathematics</a></h3>
               <p class="place"><a href="https://www.unimore.it/it" data-i18n="university">University of Modena and Reggio Emilia</a></p>
+              <p class="step-note" data-i18n-html="bscThesisInfo">Thesis</p>
               <a class="thesis" href="bsc-thesis.html" data-i18n="bscThesis">Read my BSc thesis</a>
             </div>
           </article>
         </div>
+
+        <h3 class="content-label reveal" data-i18n="projectsLabel">Projects</h3>
+        <div class="projects reveal">
+          <div class="card-stack" data-card-stack aria-label="Projects" data-i18n-aria="projectsAria">
+            <article class="stack-card stack-card--lime">
+              <span class="stack-card-art" aria-hidden="true"></span>
+              <a class="stack-card-org" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">Clust-ER Build<svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+              <div class="stack-card-foot">
+                <a class="stack-card-title" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">EXTREME</a>
+                <p class="stack-card-place" data-i18n="projectPlace">Bologna (BO), Italy</p>
+              </div>
+            </article>
+            <article class="stack-card stack-card--ink">
+              <span class="stack-card-art" aria-hidden="true"></span>
+              <a class="stack-card-org" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">Clust-ER Build<svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+              <div class="stack-card-foot">
+                <a class="stack-card-title" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">EXTREME</a>
+                <p class="stack-card-place" data-i18n="projectPlace">Bologna (BO), Italy</p>
+              </div>
+            </article>
+            <article class="stack-card stack-card--paper">
+              <span class="stack-card-art" aria-hidden="true"></span>
+              <a class="stack-card-org" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">Clust-ER Build<svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+              <div class="stack-card-foot">
+                <a class="stack-card-title" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">EXTREME</a>
+                <p class="stack-card-place" data-i18n="projectPlace">Bologna (BO), Italy</p>
+              </div>
+            </article>
+          </div>
+          <button class="stack-shuffle" type="button" aria-label="Next card" data-i18n-aria="stackNext">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.3 6.4L3 16M3 21v-5h5"/></svg>
+          </button>
+        </div>
+
       </div>
     </section>
 
@@ -416,6 +581,7 @@
       <div class="wrap">
         <div class="section-head reveal">
           <div>
+            <span class="section-index">02</span>
             <h2 data-i18n="musicTitle">Music</h2>
             <p class="section-intro" data-i18n="musicManifesto">I kinda like making music.</p>
           </div>
@@ -429,18 +595,21 @@
               <strong>Back In My Arms</strong>
               <small>kalkyril</small>
             </span>
-            <span class="release-open" aria-hidden="true">▶</span>
+            <span class="release-open play" aria-hidden="true">▶</span>
           </button>
-          <a class="official-video-card set-card reveal" href="https://www.youtube.com/watch?v=ZsrMmJLvzao&amp;list=RDZsrMmJLvzao&amp;start_radio=1" data-official-video>
-            <img src="https://i.ytimg.com/vi/ZsrMmJLvzao/hqdefault.jpg" alt="Back In My Arms official video" loading="lazy">
-            <span class="set-info">
-              <span><strong>Back In My Arms</strong><small data-i18n="officialVideo">Official video</small></span>
-              <span class="play" aria-hidden="true">▶</span>
-            </span>
-          </a>
         </div>
         <h3 class="content-label live-sets-heading reveal" data-i18n="liveSetsLabel">Live sets</h3>
-        <div class="sets" id="sets" aria-label="Live set"></div>
+        <div class="cgallery" id="sets" aria-label="Live sets">
+          <div class="cgallery-stage" tabindex="0" aria-hidden="true"></div>
+          <div class="cgallery-foot">
+            <p class="cgallery-caption" aria-live="polite"><span class="cgallery-index">01 / 05</span><span class="cgallery-meta"></span></p>
+            <div class="cgallery-controls">
+              <button type="button" data-dir="-1" aria-label="Previous set" data-i18n-aria="setPrev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+              <button type="button" data-dir="1" aria-label="Next set" data-i18n-aria="setNext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            </div>
+          </div>
+          <ul class="cgallery-list"></ul>
+        </div>
         <h3 class="content-label equipment-heading reveal" data-i18n="equipmentLabel">Equipment</h3>
         <div class="equipment-board reveal" aria-label="DJ equipment">
           <figure class="equipment-rig" aria-label="DJ setup">
@@ -466,6 +635,7 @@
         </div>
       </div>
     </section>
+    </div>
   </main>
 
   <div class="release-panel" id="release-panel" aria-hidden="true" aria-labelledby="release-platform-label">
@@ -473,7 +643,12 @@
       <div class="release-panel-shell">
         <p class="release-platform-label" id="release-platform-label" data-i18n="releaseChoosePlatform">Choose a streaming platform</p>
         <div class="release-platforms">
-          <div class="platform-row" style="--delay:110ms">
+          <div class="platform-row" style="--delay:0ms">
+            <span class="platform-mark platform-mark--youtube" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="5" fill="currentColor"/><path d="m10 8 6 4-6 4Z" fill="#ff0033"/></svg></span>
+            <span class="platform-name">YouTube</span>
+            <a class="platform-listen" href="https://www.youtube.com/watch?v=ZsrMmJLvzao" data-official-video data-i18n="officialVideo">Official video</a>
+          </div>
+          <div class="platform-row" style="--delay:20ms">
             <span class="platform-mark platform-mark--apple" aria-hidden="true">
               <svg viewBox="0 0 24 24">
                 <path d="M17.4 4.8 8.1 6.65v8.05a2.85 2.85 0 1 0 1.55 2.53V9.05l6.2-1.24v5.37a2.85 2.85 0 1 0 1.55 2.53V4.8Z" fill="currentColor"/>
@@ -482,7 +657,7 @@
             <span class="platform-name">Apple Music</span>
             <a class="platform-listen" href="https://music.apple.com/it/album/6794856893?app=music&amp;at=1l3vpUI&amp;ct=LFV_b7f253237e5db171d36b6481e60d78f5&amp;itscg=30440&amp;itsct=catchall_p1&amp;lId=216740801&amp;cId=none&amp;sr=1&amp;src=Linkfire&amp;ls=1" data-i18n="listen">Listen</a>
           </div>
-          <div class="platform-row" style="--delay:165ms">
+          <div class="platform-row" style="--delay:40ms">
             <span class="platform-mark platform-mark--spotify" aria-hidden="true">
               <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" fill="currentColor"/>
@@ -492,7 +667,7 @@
             <span class="platform-name">Spotify</span>
             <a class="platform-listen" href="https://open.spotify.com/intl-it/track/2dyewiRtKPjFkpyulG0CTw?si=81196d75ee994e32" data-i18n="listen">Listen</a>
           </div>
-          <div class="platform-row" style="--delay:220ms">
+          <div class="platform-row" style="--delay:60ms">
             <span class="platform-mark platform-mark--soundcloud" aria-hidden="true">
               <svg viewBox="0 0 24 24">
                 <path d="M3 13.8v3.4M5.2 12.5v4.7M7.4 10.8v6.4M9.6 9.4v7.8M11.2 17.2V9.1a5.2 5.2 0 0 1 9.2 3.3h.25a2.4 2.4 0 1 1 0 4.8H11.2Z" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/>
@@ -501,7 +676,7 @@
             <span class="platform-name">SoundCloud</span>
             <a class="platform-listen" href="https://soundcloud.com/kalkyril/backinmyarms" data-i18n="listen">Listen</a>
           </div>
-          <div class="platform-row" style="--delay:275ms">
+          <div class="platform-row" style="--delay:80ms">
             <span class="platform-mark platform-mark--itunes" aria-hidden="true">
               <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="9.25" fill="none" stroke="currentColor" stroke-width="1.45"/>
@@ -511,7 +686,7 @@
             <span class="platform-name">iTunes</span>
             <a class="platform-listen" href="https://music.apple.com/it/album/6794856893?app=itunes&amp;at=1l3vpUI&amp;ct=LFV_b7f253237e5db171d36b6481e60d78f5&amp;itscg=30440&amp;itsct=catchall_p3&amp;lId=216740801&amp;cId=none&amp;sr=3&amp;src=Linkfire&amp;ls=1" data-i18n="listen">Listen</a>
           </div>
-          <div class="platform-row" style="--delay:330ms">
+          <div class="platform-row" style="--delay:100ms">
             <span class="platform-mark platform-mark--deezer" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <rect x="3" y="14" width="3" height="5" rx=".5"/><rect x="7" y="11" width="3" height="8" rx=".5"/><rect x="11" y="8" width="3" height="11" rx=".5"/><rect x="15" y="5" width="3" height="14" rx=".5"/><rect x="19" y="10" width="2" height="9" rx=".5"/>
@@ -520,7 +695,7 @@
             <span class="platform-name">Deezer</span>
             <a class="platform-listen" href="https://www.deezer.com/album/1038550412?app_id=140685&amp;utm_source=partner_linkfire&amp;utm_campaign=b7f253237e5db171d36b6481e60d78f5&amp;utm_medium=Original&amp;utm_term=prod&amp;utm_content=album-1038550412" data-i18n="listen">Listen</a>
           </div>
-          <div class="platform-row" style="--delay:385ms">
+          <div class="platform-row" style="--delay:120ms">
             <span class="platform-mark platform-mark--amazon" aria-hidden="true">
               <svg viewBox="0 0 24 24">
                 <path d="M14.8 14.6c-.72.54-1.75 1.02-2.82 1.02-1.58 0-2.7-.95-2.7-2.48 0-1.2.65-2.04 1.77-2.52.96-.41 2.3-.49 3.58-.49v-.46c0-1.04-.37-1.62-1.47-1.62-.85 0-1.36.44-1.51 1.25l-1.9-.18c.28-1.72 1.72-2.65 3.56-2.65 2.2 0 3.45 1.07 3.45 3.2v3.52c0 .78.08 1.31.49 1.94l-1.84 1.15c-.3-.43-.5-.91-.61-1.68Zm-.17-3.12c-1.81 0-3.17.27-3.17 1.48 0 .65.42 1.09 1.17 1.09.76 0 1.49-.42 2-.92v-1.65Z" fill="currentColor"/>
@@ -530,7 +705,7 @@
             <span class="platform-name">Amazon Music</span>
             <a class="platform-listen" href="https://music.amazon.com/albums/B0HBNFDRBW?tag=linkfiregen&amp;ie=UTF8&amp;linkCode=as2&amp;ascsubtag=b7f253237e5db171d36b6481e60d78f5&amp;ref=dmm_acq_soc_it_u_lfire_lp_x_b7f253237e5db171d36b6481e60d78f5" data-i18n="listen">Listen</a>
           </div>
-          <div class="platform-row" style="--delay:440ms">
+          <div class="platform-row" style="--delay:140ms">
             <span class="platform-mark platform-mark--tidal" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="4,7 7,4 10,7 7,10"/><polygon points="10,7 13,4 16,7 13,10"/><polygon points="16,7 19,4 22,7 19,10"/><polygon points="10,13 13,10 16,13 13,16"/>
@@ -546,6 +721,7 @@
 
   <footer>
     <div class="wrap footer-inner">
+      <p class="footer-signature" aria-hidden="true">kalkyril</p>
       <div class="footer-social-links" aria-label="Social profiles"></div>
       <div class="footer-meta">
         <div class="language-switcher" role="group" aria-label="Language">
@@ -568,15 +744,16 @@
     resetHomePosition();
     addEventListener("pageshow", () => requestAnimationFrame(resetHomePosition));
 
-    const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
     const mobileViewport = matchMedia("(max-width: 760px)");
-    const siteMotionEnabled = () => mobileViewport.matches || !prefersReducedMotion.matches;
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const lerp = (a, b, t) => a + (b - a) * t;
 
-    const homeLink = document.querySelector('a[href="#top"]');
-    homeLink.addEventListener("click", (event) => {
+    document.querySelector('.site-nav a[href="#top"]').addEventListener("click", (event) => {
       event.preventDefault();
-      history.replaceState(null, "", "#top");
-      scrollTo({ top: 0, behavior: siteMotionEnabled() ? "smooth" : "auto" });
+      history.replaceState(null, "", location.pathname);
+      scrollTo({ top: 0, behavior: reducedMotion.matches ? "auto" : "smooth" });
     });
 
     const TRANSLATIONS = {
@@ -598,16 +775,23 @@
         navAbout: "About",
         navMusic: "Music",
         navCode: "Code",
-        prompt: '// math · <a href="https://github.com/kalkyril">code</a> · <a href="#music">music</a>',
-        heroCopy: "Mathematician, programmer and music producer.",
+        heroCopy: "Math, code and music.",
         aboutTitle: "About",
-        aboutIntro: "I am a Master’s student in <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Mathematics (Data Science program)</a> at the University of Modena and Reggio Emilia, with a strong foundation in mathematics and computational methods. My interests span Computer Graphics, data analysis, Artificial Intelligence, and creative applications including cinema, music production and video editing.",
+        aboutIntro: "I hold an MSc cum laude in <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Mathematics (Data Science program)</a> from the University of Modena and Reggio Emilia. I have rigorous foundations in differential geometry, numerical methods and statistics, which I apply to Computer Graphics, Vision and Machine Learning in Python, C and (occasionally) C++. I am looking for a role in graphics, 3D geometry or applied Machine Learning, where mathematical depth becomes working software. I have a strong interest in generative AI and creative computation, as well as cinema, music production and video editing.",
         educationLabel: "Education",
-        mscTitle: "MSc in Mathematics — Data Science [LM40]",
+        mscTitle: "MSc cum laude in Mathematics (Data Science) [LM40]",
         bscTitle: "BSc in Mathematics [L35]",
         university: "University of Modena and Reggio Emilia",
-        mscThesis: "MSc thesis coming soon",
+        mscThesis: "Read my MSc thesis",
         bscThesis: "Read my BSc thesis",
+        mscDate: "Sep 2026",
+        bscDate: "Apr 2024",
+        mscThesisInfo: "Thesis: <em>On smooth atlases over triangle meshes</em> · Supervisors: Prof. Pellacini and Prof. Mancinelli",
+        bscThesisInfo: "Thesis: <em>Sulla disuguaglianza isoperimetrica</em> · Supervisor: Prof. Carlo Mercuri",
+        projectsLabel: "Projects",
+        projectsAria: "Projects",
+        projectPlace: "Bologna (BO), Italy",
+        stackNext: "Next card",
         musicTitle: "Music",
         musicManifesto: "I kinda like making music.",
         releasesLabel: "Releases",
@@ -621,7 +805,10 @@
         liveSetsLabel: "Live sets",
         equipmentLabel: "Equipment",
         footerBuilt: "Built from scratch",
-        liveSet: "Full set"
+        liveSet: "Full set",
+        setPrev: "Previous set",
+        setNext: "Next set",
+        scrollCue: "Scroll"
       },
       it: {
         pageTitle: "Matteo Lugli / kalkyril",
@@ -641,16 +828,23 @@
         navAbout: "Chi sono",
         navMusic: "Musica",
         navCode: "Codice",
-        prompt: '// matematica · <a href="https://github.com/kalkyril">codice</a> · <a href="#music">musica</a>',
-        heroCopy: "Matematico, programmatore e produttore musicale.",
+        heroCopy: "Matematica, codice e musica.",
         aboutTitle: "Chi sono",
-        aboutIntro: "Sono uno studente magistrale in <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Matematica (curriculum Data Science)</a> presso l’Università di Modena e Reggio Emilia, con solide basi in matematica e metodi computazionali. I miei interessi spaziano dalla Computer Grafica, all’analisi di dati, Intelligenza Artificiale e applicazioni creative tra cui cinema, produzione musicale e montaggio video.",
+        aboutIntro: "Ho conseguito la laurea magistrale con lode in <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Matematica (curriculum Data Science)</a> presso l’Università di Modena e Reggio Emilia. Ho solide basi in geometria differenziale, metodi numerici e statistica, che applico alla Computer Grafica, alla Visione artificiale e al Machine Learning in Python, C e (occasionalmente) C++. Cerco un ruolo nella grafica, nella geometria 3D o nel Machine Learning applicato, dove la profondità matematica diventa software funzionante. Mi appassionano l’AI generativa e la computazione creativa, oltre a cinema, produzione musicale e montaggio video.",
         educationLabel: "Formazione",
-        mscTitle: "Laurea magistrale in Matematica — Data Science [LM40]",
+        mscTitle: "Laurea magistrale con lode in Matematica (Data Science) [LM40]",
         bscTitle: "Laurea triennale in Matematica [L35]",
         university: "Università di Modena e Reggio Emilia",
-        mscThesis: "Tesi magistrale in arrivo",
+        mscThesis: "Leggi la mia tesi magistrale",
         bscThesis: "Leggi la mia tesi triennale",
+        mscDate: "Set 2026",
+        bscDate: "Apr 2024",
+        mscThesisInfo: "Tesi: <em>On smooth atlases over triangle meshes</em> · Relatori: Prof. Pellacini e Prof. Mancinelli",
+        bscThesisInfo: "Tesi: <em>Sulla disuguaglianza isoperimetrica</em> · Relatore: Prof. Carlo Mercuri",
+        projectsLabel: "Progetti",
+        projectsAria: "Progetti",
+        projectPlace: "Bologna (BO), Italia",
+        stackNext: "Carta successiva",
         musicTitle: "Musica",
         musicManifesto: "Mi piace più o meno fare musica.",
         releasesLabel: "Pubblicazioni",
@@ -664,7 +858,10 @@
         liveSetsLabel: "Set dal vivo",
         equipmentLabel: "Attrezzatura",
         footerBuilt: "Realizzato da zero",
-        liveSet: "Set completo"
+        liveSet: "Set completo",
+        setPrev: "Set precedente",
+        setNext: "Set successivo",
+        scrollCue: "Scorri"
       },
       fr: {
         pageTitle: "Matteo Lugli / kalkyril",
@@ -684,16 +881,23 @@
         navAbout: "À propos",
         navMusic: "Musique",
         navCode: "Code",
-        prompt: '// maths · <a href="https://github.com/kalkyril">code</a> · <a href="#music">musique</a>',
-        heroCopy: "Mathématicien, programmeur et producteur de musique.",
+        heroCopy: "Maths, code et musique.",
         aboutTitle: "À propos",
-        aboutIntro: "Je suis étudiant en master de <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Mathématiques (curriculum Data Science)</a> à l’Université de Modène et Reggio d’Émilie, avec une solide formation en mathématiques et méthodes computationnelles. Mes intérêts vont de Computer Graphics, à l’analyse de données, l’Intelligence Artificielle et les applications créatives, y compris le cinéma, la production musicale et le montage vidéo.",
+        aboutIntro: "Je suis titulaire d’un master avec mention en <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Mathématiques (curriculum Data Science)</a> de l’Université de Modène et Reggio d’Émilie. J’ai des bases rigoureuses en géométrie différentielle, méthodes numériques et statistiques, que j’applique à l’informatique graphique, à la vision par ordinateur et au Machine Learning en Python, C et (parfois) C++. Je recherche un poste en informatique graphique, géométrie 3D ou Machine Learning appliqué, là où la profondeur mathématique devient un logiciel concret. Je m’intéresse beaucoup à l’IA générative et à la création computationnelle, ainsi qu’au cinéma, à la production musicale et au montage vidéo.",
         educationLabel: "Formation",
-        mscTitle: "Master de mathématiques — Data Science [LM40]",
+        mscTitle: "Master avec mention en mathématiques (Data Science) [LM40]",
         bscTitle: "Licence de mathématiques [L35]",
         university: "Université de Modène et Reggio d’Émilie",
-        mscThesis: "Mémoire de master à venir",
+        mscThesis: "Lire mon mémoire de master",
         bscThesis: "Lire mon mémoire de licence",
+        mscDate: "Sept. 2026",
+        bscDate: "Avr. 2024",
+        mscThesisInfo: "Mémoire : <em>On smooth atlases over triangle meshes</em> · Directeurs : Prof. Pellacini et Prof. Mancinelli",
+        bscThesisInfo: "Mémoire : <em>Sulla disuguaglianza isoperimetrica</em> · Directeur : Prof. Carlo Mercuri",
+        projectsLabel: "Projets",
+        projectsAria: "Projets",
+        projectPlace: "Bologne (BO), Italie",
+        stackNext: "Carte suivante",
         musicTitle: "Musique",
         musicManifesto: "J’aime bien faire de la musique.",
         releasesLabel: "Sorties",
@@ -707,7 +911,10 @@
         liveSetsLabel: "Sets en direct",
         equipmentLabel: "Équipement",
         footerBuilt: "Conçu de A à Z",
-        liveSet: "Set complet"
+        liveSet: "Set complet",
+        setPrev: "Set précédent",
+        setNext: "Set suivant",
+        scrollCue: "Défiler"
       },
       es: {
         pageTitle: "Matteo Lugli / kalkyril",
@@ -727,16 +934,23 @@
         navAbout: "Sobre mí",
         navMusic: "Música",
         navCode: "Código",
-        prompt: '// matemáticas · <a href="https://github.com/kalkyril">código</a> · <a href="#music">música</a>',
-        heroCopy: "Matemático, programador y productor musical.",
+        heroCopy: "Matemáticas, código y música.",
         aboutTitle: "Sobre mí",
-        aboutIntro: "Estudiante de máster en <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Matemáticas (currículum Data Science)</a> en la Universidad de Módena y Reggio Emilia, con una sólida formación en matemáticas y métodos computacionales. Sus intereses abarcan desde la Computer Graphics, hasta el análisis de datos, la Inteligencia Artificial y las aplicaciones creativas, incluyendo el cine, la producción musical y la edición de vídeo.",
+        aboutIntro: "Tengo un máster con honores en <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Matemáticas (currículum Data Science)</a> por la Universidad de Módena y Reggio Emilia. Cuento con una base rigurosa en geometría diferencial, métodos numéricos y estadística, que aplico a la Computer Graphics, la visión artificial y el Machine Learning en Python, C y (ocasionalmente) C++. Busco un puesto en gráficos, geometría 3D o Machine Learning aplicado, donde la profundidad matemática se convierte en software funcional. Me interesan mucho la IA generativa y la computación creativa, además del cine, la producción musical y la edición de vídeo.",
         educationLabel: "Formación",
-        mscTitle: "Máster en Matemáticas — Data Science [LM40]",
+        mscTitle: "Máster con honores en Matemáticas (Data Science) [LM40]",
         bscTitle: "Grado en Matemáticas [L35]",
         university: "Universidad de Módena y Reggio Emilia",
-        mscThesis: "Tesis de máster próximamente",
+        mscThesis: "Leer mi tesis de máster",
         bscThesis: "Leer mi tesis de grado",
+        mscDate: "Sept. 2026",
+        bscDate: "Abr. 2024",
+        mscThesisInfo: "Tesis: <em>On smooth atlases over triangle meshes</em> · Directores: Prof. Pellacini y Prof. Mancinelli",
+        bscThesisInfo: "Tesis: <em>Sulla disuguaglianza isoperimetrica</em> · Director: Prof. Carlo Mercuri",
+        projectsLabel: "Proyectos",
+        projectsAria: "Proyectos",
+        projectPlace: "Bolonia (BO), Italia",
+        stackNext: "Siguiente tarjeta",
         musicTitle: "Música",
         musicManifesto: "Me gusta bastante hacer música.",
         releasesLabel: "Lanzamientos",
@@ -750,7 +964,10 @@
         liveSetsLabel: "Sesiones en directo",
         equipmentLabel: "Equipo",
         footerBuilt: "Creado desde cero",
-        liveSet: "Set completo"
+        liveSet: "Set completo",
+        setPrev: "Set anterior",
+        setNext: "Set siguiente",
+        scrollCue: "Desliza"
       }
     };
 
@@ -769,16 +986,22 @@
       if (supportedLanguages.includes(savedLanguage)) activeLanguage = savedLanguage;
     } catch (error) {}
 
-    document.querySelector("#sets").innerHTML = SETS.map((set, index) => `
-      <a class="set-card reveal" style="--delay:${index * 70}ms" href="https://www.youtube.com/watch?v=${set.id}">
-        <img src="https://i.ytimg.com/vi/${set.id}/hqdefault.jpg" alt="${TRANSLATIONS[activeLanguage].coverAlt.replace("{title}", set.title)}" loading="lazy">
-        <span class="set-info">
-          <span><strong>${set.title}</strong><small>${TRANSLATIONS[activeLanguage].liveSet} · ${set.duration}</small></span>
-          <span class="play" aria-hidden="true">▶</span>
-        </span>
-      </a>`).join("");
+    // Accessible list of the sets (screen readers, keyboard, and the no-WebGL fallback grid).
+    document.querySelector("#sets .cgallery-list").innerHTML = SETS.map((set) => `
+      <li><a href="https://www.youtube.com/watch?v=${set.id}"><span class="cgallery-list-title">${set.title}</span></a></li>`).join("");
 
-    document.querySelector(".footer-social-links").innerHTML = document.querySelector(".social-links").innerHTML;
+    const heroUi = document.querySelector(".hero-ui");
+    const heroUiInverse = heroUi.cloneNode(true);
+    heroUiInverse.classList.add("hero-ui--inverse");
+    heroUiInverse.setAttribute("aria-hidden", "true");
+    heroUiInverse.inert = true;
+    heroUiInverse.querySelectorAll("[aria-label]").forEach((element) => element.removeAttribute("aria-label"));
+    heroUiInverse.querySelectorAll(".social-links").forEach((element) => element.classList.remove("social-links"));
+    heroUiInverse.querySelector(".profile")?.classList.remove("profile");
+    heroUi.after(heroUiInverse);
+
+    const footerSocial = document.querySelector(".footer-social-links");
+    footerSocial.innerHTML = document.querySelector(".hero-social").innerHTML;
 
     function applyLanguage(language, animate = false) {
       activeLanguage = supportedLanguages.includes(language) ? language : "en";
@@ -797,22 +1020,23 @@
       });
 
       document.querySelector(".site-nav").setAttribute("aria-label", copy.navAria);
-      document.querySelector(".social-links").setAttribute("aria-label", copy.socialAria);
-      document.querySelector(".footer-social-links").setAttribute("aria-label", copy.socialAria);
-      document.querySelector(".timeline").setAttribute("aria-label", copy.educationAria);
+      document.querySelectorAll(".social-links, .footer-social-links").forEach((element) => element.setAttribute("aria-label", copy.socialAria));
+      document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
+        element.setAttribute("aria-label", copy[element.dataset.i18nAria]);
+      });
       document.querySelector(".releases").setAttribute("aria-label", copy.releasesAria);
       document.querySelector(".release-card").setAttribute("aria-label", copy.releaseOpenAria);
       document.querySelector(".release-cover").alt = copy.releaseCoverAlt;
       document.querySelector("[data-official-video]").setAttribute("aria-label", copy.officialVideoAria);
-      document.querySelector("[data-official-video] img").alt = copy.officialVideoAria;
       document.querySelector("#sets").setAttribute("aria-label", copy.setsAria);
       document.querySelector(".equipment-board").setAttribute("aria-label", copy.equipmentAria);
       document.querySelector(".equipment-photo").alt = copy.equipmentPhotoAlt;
       document.querySelector(".language-switcher").setAttribute("aria-label", copy.languageAria);
       document.querySelector(".profile").alt = copy.profileAlt;
-      document.querySelectorAll("#sets .set-card").forEach((card, index) => {
-        card.querySelector("img").alt = copy.coverAlt.replace("{title}", SETS[index].title);
-        card.querySelector("small").textContent = `${copy.liveSet} · ${SETS[index].duration}`;
+      document.querySelectorAll("#sets .cgallery-list a").forEach((link, index) => {
+        link.setAttribute("aria-label", `${SETS[index].title} — ${copy.liveSet} (${SETS[index].duration})`);
+        const img = link.querySelector("img");
+        if (img) img.alt = copy.coverAlt.replace("{title}", SETS[index].title);
       });
       document.querySelectorAll("[data-lang]").forEach((button) => {
         button.setAttribute("aria-pressed", String(button.dataset.lang === activeLanguage));
@@ -841,9 +1065,9 @@
       releasePanel.setAttribute("aria-hidden", String(!open));
       releaseCard.setAttribute("aria-expanded", String(open));
     }
-
-    releaseCard.addEventListener("click", () => {
-      setReleasePanel(!releasePanel.classList.contains("is-open"));
+    releaseCard.addEventListener("click", () => setReleasePanel(!releasePanel.classList.contains("is-open")));
+    document.addEventListener("pointerdown", (event) => {
+      if (releasePanel.classList.contains("is-open") && !event.target.closest(".releases")) setReleasePanel(false);
     });
     addEventListener("keydown", (event) => {
       if (event.key === "Escape" && releasePanel.classList.contains("is-open")) {
@@ -852,50 +1076,826 @@
       }
     });
 
-    if ("IntersectionObserver" in window && siteMotionEnabled()) {
+    if ("IntersectionObserver" in window && !reducedMotion.matches) {
       const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          entry.target.classList.toggle("visible", entry.isIntersecting);
-        });
+        entries.forEach((entry) => entry.target.classList.toggle("visible", entry.isIntersecting));
       }, { threshold: .12 });
       document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
     } else {
       document.querySelectorAll(".reveal").forEach((element) => element.classList.add("visible"));
     }
 
+    /* ───────── Projects: interactive card stack ───────── */
+    document.querySelectorAll("[data-card-stack]").forEach((stack) => {
+      const sensitivity = 110;
+      const elastic = .6;
+      const randomTilt = () => Math.random() * 8 - 4;
+      let order = [...stack.querySelectorAll(".stack-card")]; // last item is the top card
+      const tilt = new Map(order.map((card) => [card, randomTilt()]));
+
+      function layout() {
+        order.forEach((card, index) => {
+          const depth = order.length - 1 - index;
+          const isTop = depth === 0;
+          card.style.zIndex = String(index);
+          card.style.setProperty("--depth", depth);
+          card.style.setProperty("--rot", `${(depth * -3.5 + tilt.get(card)).toFixed(2)}deg`);
+          card.inert = !isTop;
+          card.setAttribute("aria-hidden", String(!isTop));
+          card.classList.toggle("is-top", isTop);
+        });
+      }
+      function resetDrag(card) {
+        for (const prop of ["--dx", "--dy", "--rx", "--ry"]) card.style.removeProperty(prop);
+      }
+      function sendToBack() {
+        const card = order.pop();
+        tilt.set(card, randomTilt());
+        resetDrag(card);
+        order.unshift(card);
+        layout();
+      }
+
+      let drag = null;
+      stack.addEventListener("pointerdown", (event) => {
+        const card = event.target.closest(".stack-card.is-top");
+        if (!card || event.button > 0) return;
+        drag = { card, id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+      });
+      stack.addEventListener("pointermove", (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        const ox = event.clientX - drag.x, oy = event.clientY - drag.y;
+        if (!drag.moved && Math.hypot(ox, oy) < 6) return;
+        if (!drag.moved) {
+          drag.moved = true;
+          drag.card.classList.add("is-dragging");
+          drag.card.setPointerCapture(event.pointerId);
+        }
+        drag.ox = ox; drag.oy = oy;
+        const dx = ox * elastic, dy = oy * elastic;
+        drag.card.style.setProperty("--dx", `${dx}px`);
+        drag.card.style.setProperty("--dy", `${dy}px`);
+        drag.card.style.setProperty("--rx", `${clamp(-dy * .3, -30, 30)}deg`);
+        drag.card.style.setProperty("--ry", `${clamp(dx * .3, -30, 30)}deg`);
+      });
+      function endDrag(event, cancelled) {
+        if (!drag || event.pointerId !== drag.id) return;
+        const { card, moved, ox = 0, oy = 0 } = drag;
+        card.classList.remove("is-dragging");
+        if (moved) {
+          card.dataset.justDragged = "1";
+          setTimeout(() => delete card.dataset.justDragged, 0);
+          if (!cancelled && (Math.abs(ox) > sensitivity || Math.abs(oy) > sensitivity)) sendToBack();
+          else resetDrag(card);
+        }
+        drag = null;
+      }
+      stack.addEventListener("pointerup", (event) => endDrag(event, false));
+      stack.addEventListener("pointercancel", (event) => endDrag(event, true));
+
+      // A click (not a drag) on the card surface sends it to the back; clicks on its links still navigate.
+      stack.addEventListener("click", (event) => {
+        const card = event.target.closest(".stack-card.is-top");
+        if (!card) return;
+        if (card.dataset.justDragged) { event.preventDefault(); return; }
+        if (!event.target.closest("a")) sendToBack();
+      });
+      stack.closest(".projects").querySelector(".stack-shuffle").addEventListener("click", sendToBack);
+      layout();
+    });
+
+    /* ───────── Chapter colour mode + floating nav ───────── */
+    const hero = document.querySelector("#hero");
     const aboutSection = document.querySelector("#about");
     const musicSection = document.querySelector("#music");
     const siteNav = document.querySelector(".site-nav");
-    const scrollProgress = document.querySelector(".scroll-progress");
-    let colorTicking = false;
-    function updateColorMode() {
+    const navAbout = siteNav.querySelector('a[href="#about"]');
+    const navMusic = siteNav.querySelector('a[href="#music"]');
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    let modeTicking = false;
+    function updateMode() {
       const musicIsActive = musicSection.getBoundingClientRect().top <= innerHeight * .55;
       const aboutIsActive = !musicIsActive && aboutSection.getBoundingClientRect().top <= innerHeight * .55;
-      document.body.classList.toggle("about-mode", aboutIsActive);
       document.body.classList.toggle("music-mode", musicIsActive);
-      siteNav.classList.toggle("scrolled", scrollY > 12);
-      const maxScroll = document.documentElement.scrollHeight - innerHeight;
-      scrollProgress.style.transform = `scaleX(${maxScroll > 0 ? Math.min(scrollY / maxScroll, 1) : 0})`;
-      colorTicking = false;
+      navAbout.classList.toggle("is-current", aboutIsActive);
+      navMusic.classList.toggle("is-current", musicIsActive);
+      themeColor.content = musicIsActive ? "#09090b" : "#fdfdfd";
+      const navVisible = scrollY > hero.offsetHeight * .8;
+      siteNav.classList.toggle("scrolled", navVisible);
+      siteNav.inert = !navVisible;
+      siteNav.setAttribute("aria-hidden", String(!navVisible));
+      modeTicking = false;
     }
-    function requestColorUpdate() {
-      if (!colorTicking) {
-        colorTicking = true;
-        requestAnimationFrame(updateColorMode);
+    function requestModeUpdate() {
+      if (!modeTicking) {
+        modeTicking = true;
+        requestAnimationFrame(updateMode);
       }
     }
-    addEventListener("scroll", requestColorUpdate, { passive: true });
-    addEventListener("resize", requestColorUpdate);
-    addEventListener("pageshow", requestColorUpdate);
-    requestColorUpdate();
+    addEventListener("scroll", requestModeUpdate, { passive: true });
+    addEventListener("resize", requestModeUpdate);
+    addEventListener("pageshow", requestModeUpdate);
+    requestModeUpdate();
 
     const spotlight = document.querySelector(".spotlight");
     addEventListener("pointermove", (event) => {
       spotlight.style.setProperty("--mx", `${event.clientX}px`);
       spotlight.style.setProperty("--my", `${event.clientY}px`);
-    });
+    }, { passive: true });
+
+    /* ───────── HERO: blob reveal, trails, waves, parallax, text inversion ───────── */
+    (() => {
+      const stageImage = hero.querySelector(".hero-img");
+      const wavesCanvas = hero.querySelector(".hero-waves");
+      const revealCanvas = hero.querySelector(".hero-reveal");
+      const waves = wavesCanvas.getContext("2d");
+      const reveal = revealCanvas.getContext("2d");
+      const inverseUi = hero.querySelector(".hero-ui--inverse");
+      const pathRecorder = {
+        d: "",
+        moveTo(x, y) { this.d += `M${x.toFixed(1)} ${y.toFixed(1)}`; },
+        quadraticCurveTo(cx, cy, x, y) { this.d += `Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)}`; },
+        closePath() { this.d += "Z"; }
+      };
+      let lastClip = "";
+      const revealBg = revealCanvas.dataset.bg || "#0b0b0e";
+      const imageTwo = new Image();
+      imageTwo.decoding = "async";
+      imageTwo.src = revealCanvas.dataset.src;
+
+      let width = 0, height = 0, dpr = 1;
+      let heroTop = 0;
+      let running = false, heroVisible = true, rafId = 0;
+      let time = 0, lastNow = performance.now();
+
+      const pointer = { x: 0, y: 0, clientX: -1, clientY: -1, inside: false, lastMove: 0 };
+      const blob = { x: 0, y: 0, vx: 0, vy: 0, scale: 0, targetScale: 0, radius: 120, placed: false };
+      const trails = [];
+      const parallax = { x: 0, y: 0, tx: 0, ty: 0 };
+      const wave = { x: .5, y: .5, strength: 0, targetStrength: 0 };
+      const autopilot = () => !finePointer.matches;
+
+      function resize() {
+        const rect = hero.getBoundingClientRect();
+        width = rect.width;
+        height = rect.height;
+        dpr = Math.min(devicePixelRatio || 1, 2);
+        for (const canvas of [wavesCanvas, revealCanvas]) {
+          canvas.width = Math.round(width * dpr);
+          canvas.height = Math.round(height * dpr);
+        }
+        waves.setTransform(dpr, 0, 0, dpr, 0, 0);
+        reveal.setTransform(dpr, 0, 0, dpr, 0, 0);
+        blob.radius = clamp(Math.min(width, height) * .17, 78, 190);
+        if (!blob.placed) { blob.x = width * .5; blob.y = height * .55; }
+        if (reducedMotion.matches) drawWaves();
+      }
+
+      // Geometry of image one in hero coordinates (image two is drawn on the same frame).
+      function imageFrame() {
+        return {
+          x: stageImage.offsetLeft - stageImage.offsetWidth / 2 - parallax.x * 14,
+          y: stageImage.offsetTop - parallax.y * 10,
+          w: stageImage.offsetWidth,
+          h: stageImage.offsetHeight
+        };
+      }
+
+      // Organic blob: a wobbling polar shape stretched along the velocity (squash & stretch).
+      function blobPath(ctx, cx, cy, radius, vx, vy, seed) {
+        const points = 12;
+        const speed = Math.hypot(vx, vy);
+        const angle = Math.atan2(vy, vx);
+        const stretch = 1 + Math.min(speed / 55, .45);
+        const squash = 1 / Math.sqrt(stretch);
+        const cos = Math.cos(angle), sin = Math.sin(angle);
+        const coords = [];
+        for (let i = 0; i < points; i++) {
+          const a = (i / points) * Math.PI * 2;
+          const wobble = 1
+            + .07 * Math.sin(time * 1.3 + i * 1.7 + seed)
+            + .05 * Math.sin(time * 2.1 - i * 2.3 + seed * 2)
+            + .03 * Math.sin(time * 3.4 + i * .9);
+          const lx = Math.cos(a) * radius * wobble * stretch;
+          const ly = Math.sin(a) * radius * wobble * squash;
+          coords.push([cx + lx * cos - ly * sin, cy + lx * sin + ly * cos]);
+        }
+        const mid = (p, q) => [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
+        const start = mid(coords[points - 1], coords[0]);
+        ctx.moveTo(start[0], start[1]);
+        for (let i = 0; i < points; i++) {
+          const p = coords[i];
+          const m = mid(p, coords[(i + 1) % points]);
+          ctx.quadraticCurveTo(p[0], p[1], m[0], m[1]);
+        }
+        ctx.closePath();
+      }
+
+      function paintThrough(pathFn, alpha) {
+        reveal.save();
+        reveal.globalAlpha = alpha;
+        reveal.beginPath();
+        pathFn();
+        reveal.clip();
+        reveal.fillStyle = revealBg;
+        reveal.fillRect(0, 0, width, height);
+        if (imageTwo.complete && imageTwo.naturalWidth) {
+          const f = imageFrame();
+          reveal.drawImage(imageTwo, f.x, f.y, f.w, f.h);
+        }
+        reveal.restore();
+      }
+
+      function drawReveal() {
+        reveal.clearRect(0, 0, width, height);
+        for (const t of trails) {
+          paintThrough(() => blobPath(reveal, t.x, t.y, t.r * t.life, t.vx * .4, t.vy * .4, t.seed), t.life * .75);
+        }
+        if (blob.scale > .01) {
+          paintThrough(() => blobPath(reveal, blob.x, blob.y, blob.radius * blob.scale, blob.vx, blob.vy, 0), 1);
+        }
+      }
+
+      function drawWaves() {
+        waves.clearRect(0, 0, width, height);
+        const lines = mobileViewport.matches ? 7 : 10;
+        const gap = height / (lines + 1);
+        const mx = wave.x * width, my = wave.y * height;
+        const sigma = Math.max(width, height) * .12;
+        waves.lineWidth = 1;
+        for (let i = 0; i < lines; i++) {
+          const baseY = gap * (i + 1);
+          waves.beginPath();
+          for (let x = -20; x <= width + 20; x += 18) {
+            const drift = Math.sin(x * .0042 + time * .45 + i * .8) * 9 + Math.sin(x * .011 - time * .3 + i * 1.9) * 3.5;
+            const dx = x - mx, dy = baseY - my;
+            const influence = Math.exp(-(dx * dx + dy * dy) / (2 * sigma * sigma)) * wave.strength;
+            const y = baseY + drift + influence * Math.sin(x * .02 - time * 2.2) * 16 - influence * Math.sign(dy || 1) * 14;
+            x === -20 ? waves.moveTo(x, y) : waves.lineTo(x, y);
+          }
+          waves.strokeStyle = `rgba(14,14,16,${.055 + (i % 3 === 0 ? .025 : 0)})`;
+          waves.stroke();
+        }
+      }
+
+      // Clip the white twin of the UI with the exact blob outline: per-pixel inversion.
+      function updateInversion() {
+        let clip = "inset(50% 50% 50% 50%)";
+        if (blob.scale > .02) {
+          pathRecorder.d = "";
+          blobPath(pathRecorder, blob.x, blob.y, blob.radius * blob.scale, blob.vx, blob.vy, 0);
+          clip = `path("${pathRecorder.d}")`;
+        }
+        if (clip !== lastClip) {
+          inverseUi.style.clipPath = clip;
+          lastClip = clip;
+        }
+      }
+
+      function frame(now) {
+        const dt = Math.min((now - lastNow) / 16.667, 3);
+        lastNow = now;
+        time += dt / 60;
+        const heroRect = hero.getBoundingClientRect();
+        heroTop = heroRect.top;
+
+        // Target: real cursor, or a slow Lissajous path on touch screens when idle.
+        let tx, ty;
+        if (autopilot() && (!pointer.inside || now - pointer.lastMove > 2600)) {
+          // Wander over the figure itself so the idle reveal always shows image two.
+          const f = imageFrame();
+          tx = f.x + f.w * (.5 + .13 * Math.sin(time * .55));
+          ty = clamp(f.y + f.h * (.46 + .16 * Math.sin(time * .8 + 1.2)), blob.radius, height - blob.radius * .6);
+          blob.targetScale = .85;
+        } else {
+          tx = pointer.clientX - heroRect.left;
+          ty = pointer.clientY - heroRect.top;
+          blob.targetScale = pointer.inside ? 1 : 0;
+        }
+        if (!blob.placed && (pointer.inside || autopilot())) {
+          blob.x = tx; blob.y = ty; blob.placed = true;
+        }
+
+        const follow = reducedMotion.matches ? 1 : 1 - Math.pow(1 - .13, dt);
+        const px = blob.x, py = blob.y;
+        blob.x = lerp(blob.x, tx, follow);
+        blob.y = lerp(blob.y, ty, follow);
+        blob.vx = lerp(blob.vx, (blob.x - px) / dt, .35);
+        blob.vy = lerp(blob.vy, (blob.y - py) / dt, .35);
+        blob.scale = lerp(blob.scale, blob.targetScale, 1 - Math.pow(1 - .09, dt));
+
+        // Trails: faster movement spawns bigger, more frequent echoes.
+        const speed = Math.hypot(blob.vx, blob.vy);
+        if (!reducedMotion.matches && blob.scale > .3 && speed > 2.2) {
+          trails.push({ x: px, y: py, vx: blob.vx, vy: blob.vy, r: blob.radius * blob.scale * clamp(speed / 38, .18, .62), life: 1, seed: Math.random() * 10 });
+          if (trails.length > 22) trails.shift();
+        }
+        for (let i = trails.length - 1; i >= 0; i--) {
+          const t = trails[i];
+          t.life *= Math.pow(.9, dt);
+          t.x += t.vx * .15 * dt;
+          t.y += t.vy * .15 * dt;
+          if (t.life < .04) trails.splice(i, 1);
+        }
+
+        // Parallax (opposite to the cursor) and wave response.
+        if (!reducedMotion.matches) {
+          if (pointer.inside) {
+            parallax.tx = clamp((pointer.clientX - heroRect.left) / width * 2 - 1, -1, 1);
+            parallax.ty = clamp((pointer.clientY - heroRect.top) / height * 2 - 1, -1, 1);
+          } else { parallax.tx = 0; parallax.ty = 0; }
+          parallax.x = lerp(parallax.x, parallax.tx, 1 - Math.pow(1 - .06, dt));
+          parallax.y = lerp(parallax.y, parallax.ty, 1 - Math.pow(1 - .06, dt));
+          hero.style.setProperty("--px", parallax.x.toFixed(4));
+          hero.style.setProperty("--py", parallax.y.toFixed(4));
+
+          wave.targetStrength = pointer.inside || autopilot() ? 1 : 0;
+          wave.strength = lerp(wave.strength, wave.targetStrength, .04 * dt);
+          wave.x = lerp(wave.x, blob.x / width, .08 * dt);
+          wave.y = lerp(wave.y, blob.y / height, .08 * dt);
+          drawWaves();
+        }
+
+        drawReveal();
+        updateInversion();
+        rafId = requestAnimationFrame(frame);
+      }
+
+      function start() {
+        if (running || !heroVisible || document.hidden) return;
+        running = true;
+        lastNow = performance.now();
+        rafId = requestAnimationFrame(frame);
+      }
+      function stop() {
+        running = false;
+        cancelAnimationFrame(rafId);
+      }
+
+      function trackPointer(event) {
+        pointer.clientX = event.clientX;
+        pointer.clientY = event.clientY;
+        pointer.lastMove = performance.now();
+        if (event.pointerType === "mouse" || event.pointerType === "pen" || event.type === "pointerdown") pointer.inside = true;
+      }
+      hero.addEventListener("pointerenter", trackPointer);
+      hero.addEventListener("pointermove", trackPointer, { passive: true });
+      hero.addEventListener("pointerdown", trackPointer, { passive: true });
+      hero.addEventListener("pointerleave", () => { pointer.inside = false; });
+
+      new ResizeObserver(resize).observe(hero);
+      resize();
+      drawWaves();
+      new IntersectionObserver(([entry]) => {
+        heroVisible = entry.isIntersecting;
+        heroVisible ? start() : stop();
+      }).observe(hero);
+      document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
+      start();
+    })();
+
+    /* ───────── JOURNEY: an SVG line that draws itself with the scroll ───────── */
+    (() => {
+      const journey = document.querySelector("#journey");
+      const svg = journey.querySelector(".journey-svg");
+      const track = svg.querySelector(".journey-track");
+      const line = svg.querySelector(".journey-line");
+      const nodeGroup = svg.querySelector(".journey-nodes");
+      const tip = svg.querySelector(".journey-tip");
+      const halo = svg.querySelector(".journey-tip-halo");
+      const cue = document.querySelector(".scroll-cue .cue-line");
+      const anchors = [...journey.querySelectorAll("h2, .content-label")];
+      const aboutEnd = aboutSection.querySelector(".wrap").lastElementChild;
+
+      let total = 0, samples = [], nodes = [], drawn = 0, target = 0, ticking = false, animating = false;
+
+      // Segments with vertical tangents at every waypoint: y stays monotonic, so no overshoot.
+      function buildPath() {
+        const box = journey.getBoundingClientRect();
+        const width = box.width;
+        const local = (rect) => ({ top: rect.top - box.top, bottom: rect.bottom - box.top, left: rect.left - box.left, right: rect.right - box.left, mid: (rect.top + rect.bottom) / 2 - box.top });
+        const contentLeft = local(journey.querySelector(".section-head").getBoundingClientRect()).left;
+        const gx = contentLeft - Math.min(64, contentLeft / 2);
+        const sway = mobileViewport.matches ? 5 : 16;
+        const cueX = cue.getBoundingClientRect().left + .5 - box.left;
+
+        const points = [{ x: cueX, y: 0 }];
+        const nodeData = [];
+        const aboutBottom = local(aboutSection.getBoundingClientRect()).bottom;
+        const musicHead = local(musicSection.querySelector("h2").getBoundingClientRect());
+        const timelineBottom = local(aboutEnd.getBoundingClientRect()).bottom;
+
+        anchors.forEach((anchor, index) => {
+          const r = local(anchor.getBoundingClientRect());
+          const isMajor = anchor.tagName === "H2";
+          const y = isMajor ? r.top + Math.min(28, (r.bottom - r.top) / 2) : r.mid;
+          if (anchor === musicSection.querySelector("h2")) {
+            // The chapter change: a wide swoosh through the empty band between sections.
+            points.push({ x: gx, y: timelineBottom + 20 });
+            points.push({ x: Math.min(width * .72, width - 40), y: aboutBottom });
+            points.push({ x: gx, y: musicHead.top - 30 });
+          } else if (points.length > 1) {
+            const prev = points[points.length - 1];
+            points.push({ x: gx + (index % 2 ? sway : -sway), y: (prev.y + y) / 2 });
+          }
+          points.push({ x: gx, y });
+          nodeData.push({ x: gx, y, major: isMajor });
+        });
+        const end = journey.scrollHeight - 40;
+        points.push({ x: gx + sway, y: (points[points.length - 1].y + end) / 2 });
+        points.push({ x: gx, y: end });
+        nodeData.push({ x: gx, y: end, major: true });
+
+        let d = `M${points[0].x.toFixed(1)},${points[0].y.toFixed(1)}`;
+        for (let i = 1; i < points.length; i++) {
+          const a = points[i - 1], b = points[i];
+          const k = (b.y - a.y) * .5;
+          d += ` C${a.x.toFixed(1)},${(a.y + k).toFixed(1)} ${b.x.toFixed(1)},${(b.y - k).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
+        }
+        track.setAttribute("d", d);
+        line.setAttribute("d", d);
+        total = line.getTotalLength();
+        line.style.strokeDasharray = `${total} ${total}`;
+
+        samples = [];
+        const step = 6;
+        for (let l = 0; l <= total; l += step) {
+          const p = line.getPointAtLength(l);
+          samples.push({ l, x: p.x, y: p.y });
+        }
+        const last = line.getPointAtLength(total);
+        samples.push({ l: total, x: last.x, y: last.y });
+
+        nodeGroup.replaceChildren();
+        nodes = nodeData.map((n) => {
+          const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          circle.setAttribute("cx", n.x.toFixed(1));
+          circle.setAttribute("cy", n.y.toFixed(1));
+          circle.setAttribute("r", n.major ? 6 : 4);
+          circle.setAttribute("class", `journey-node${n.major ? " is-major" : ""}`);
+          nodeGroup.append(circle);
+          return { el: circle, l: lengthAtY(n.y) };
+        });
+        target = computeTarget();
+        if (!animating) { drawn = target; render(); }
+      }
+
+      function lengthAtY(y) {
+        let lo = 0, hi = samples.length - 1;
+        if (!samples.length || y <= samples[0].y) return 0;
+        if (y >= samples[hi].y) return total;
+        while (hi - lo > 1) {
+          const mid = (lo + hi) >> 1;
+          samples[mid].y < y ? (lo = mid) : (hi = mid);
+        }
+        const a = samples[lo], b = samples[hi];
+        return lerp(a.l, b.l, (y - a.y) / ((b.y - a.y) || 1));
+      }
+
+      // The tip follows a reading line ~62% down the viewport; the page end completes the journey.
+      function computeTarget() {
+        const box = journey.getBoundingClientRect();
+        const maxScroll = document.documentElement.scrollHeight - innerHeight;
+        if (scrollY >= maxScroll - 2) return total;
+        return lengthAtY(innerHeight * .62 - box.top);
+      }
+
+      function pointAt(l) {
+        if (!samples.length) return { x: 0, y: 0 };
+        const i = clamp(Math.floor(l / 6), 0, samples.length - 2);
+        const a = samples[i], b = samples[i + 1];
+        const t = clamp((l - a.l) / ((b.l - a.l) || 1), 0, 1);
+        return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) };
+      }
+
+      function render() {
+        line.style.strokeDashoffset = String(total - drawn);
+        const p = pointAt(drawn);
+        const visible = drawn > 2 && drawn < total - 1;
+        for (const c of [tip, halo]) {
+          c.setAttribute("cx", p.x.toFixed(1));
+          c.setAttribute("cy", p.y.toFixed(1));
+          c.style.visibility = visible ? "" : "hidden";
+        }
+        for (const n of nodes) {
+          const on = drawn >= n.l - 1;
+          if (n.on !== on) { n.on = on; n.el.classList.toggle("is-on", on); }
+        }
+      }
+
+      function tick() {
+        drawn = reducedMotion.matches ? target : lerp(drawn, target, .14);
+        if (Math.abs(target - drawn) < .5) drawn = target;
+        render();
+        if (drawn !== target) requestAnimationFrame(tick);
+        else animating = false;
+      }
+      function onScroll() {
+        target = computeTarget();
+        if (!animating) { animating = true; requestAnimationFrame(tick); }
+      }
+
+      addEventListener("scroll", onScroll, { passive: true });
+      new ResizeObserver(() => requestAnimationFrame(buildPath)).observe(journey);
+      new ResizeObserver(() => requestAnimationFrame(buildPath)).observe(hero);
+      document.fonts && document.fonts.ready.then(buildPath);
+      addEventListener("load", buildPath);
+      buildPath();
+    })();
 
     requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add("loaded")));
+  </script>
+  <script type="module">
+    /* ───────── Live sets: circular gallery (OGL / WebGL) ─────────
+       Planes laid on a horizontal track, bent onto a circle, with inertial drag, snap and infinite wrap. */
+    const root = document.querySelector("#sets");
+    const stage = root.querySelector(".cgallery-stage");
+    const indexLabel = root.querySelector(".cgallery-index");
+    const metaLabel = root.querySelector(".cgallery-meta");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const sets = SETS;
+    const pad = (n) => String(n).padStart(2, "0");
+
+    function fallback() {
+      root.classList.add("is-fallback");
+      root.querySelectorAll(".cgallery-list a").forEach((link, i) => {
+        link.insertAdjacentHTML("afterbegin", `<img src="https://i.ytimg.com/vi/${sets[i].id}/mqdefault.jpg" alt="" loading="lazy" width="320" height="180">`);
+      });
+    }
+
+    let OGL;
+    try {
+      OGL = await import("https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm");
+    } catch (error) { fallback(); }
+
+    if (OGL) {
+      const { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } = OGL;
+      let renderer;
+      try { renderer = new Renderer({ alpha: true, antialias: true, dpr: Math.min(devicePixelRatio || 1, 2) }); } catch (error) {}
+      if (!renderer || !renderer.gl) fallback();
+      else start(renderer);
+    }
+
+    async function start(renderer) {
+      const { Camera, Mesh, Plane, Program, Texture, Transform } = OGL;
+      const gl = renderer.gl;
+      gl.clearColor(0, 0, 0, 0);
+      stage.append(gl.canvas);
+      const camera = new Camera(gl, { fov: 45 });
+      camera.position.z = 20;
+      const scene = new Transform();
+      const geometry = new Plane(gl, { heightSegments: 40, widthSegments: 80 });
+      try { await document.fonts.load('600 64px "Space Grotesk"'); } catch (error) {}
+
+      const vertex = `
+        precision highp float;
+        attribute vec3 position;
+        attribute vec2 uv;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        uniform float uTime;
+        uniform float uSpeed;
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          vec3 p = position;
+          p.z = (sin(p.x * 4.0 + uTime) * 1.5 + cos(p.y * 2.0 + uTime) * 1.5) * (0.1 + uSpeed * 0.5);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        }`;
+      const fragment = `
+        precision highp float;
+        uniform vec2 uImageSizes;
+        uniform vec2 uPlaneSizes;
+        uniform sampler2D tMap;
+        uniform float uBorderRadius;
+        uniform float uAlpha;
+        uniform float uEdge;
+        varying vec2 vUv;
+        float roundedBox(vec2 p, vec2 b, float r) {
+          vec2 d = abs(p) - b;
+          return length(max(d, vec2(0.0))) + min(max(d.x, d.y), 0.0) - r;
+        }
+        void main() {
+          vec2 ratio = vec2(
+            min((uPlaneSizes.x / uPlaneSizes.y) / (uImageSizes.x / uImageSizes.y), 1.0),
+            min((uPlaneSizes.y / uPlaneSizes.x) / (uImageSizes.y / uImageSizes.x), 1.0)
+          );
+          vec2 uv = vec2(vUv.x * ratio.x + (1.0 - ratio.x) * 0.5, vUv.y * ratio.y + (1.0 - ratio.y) * 0.5);
+          vec4 color = texture2D(tMap, uv);
+          float aspect = uPlaneSizes.x / uPlaneSizes.y;
+          vec2 p = (vUv - 0.5) * vec2(aspect, 1.0);
+          float d = roundedBox(p, vec2(0.5 * aspect, 0.5) - uBorderRadius, uBorderRadius);
+          float edge = uEdge;
+          float alpha = 1.0 - smoothstep(-edge, edge, d);
+          gl_FragColor = vec4(color.rgb, alpha * uAlpha);
+        }`;
+
+      const textTexture = (text) => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const font = '600 64px "Space Grotesk", sans-serif';
+        ctx.font = font;
+        const w = Math.ceil(ctx.measureText(text).width) + 40;
+        const h = 96;
+        canvas.width = w; canvas.height = h;
+        ctx.font = font;
+        ctx.fillStyle = "#f4f4f6";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, w / 2, h / 2);
+        const texture = new Texture(gl, { generateMipmaps: false });
+        texture.image = canvas;
+        return { texture, aspect: w / h };
+      };
+      const titleProgram = (texture) => new Program(gl, {
+        vertex: `attribute vec3 position; attribute vec2 uv; uniform mat4 modelViewMatrix; uniform mat4 projectionMatrix; varying vec2 vUv;
+          void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+        fragment: `precision highp float; uniform sampler2D tMap; uniform float uAlpha; varying vec2 vUv;
+          void main() { vec4 c = texture2D(tMap, vUv); if (c.a < 0.05) discard; gl_FragColor = vec4(c.rgb, c.a * uAlpha); }`,
+        uniforms: { tMap: { value: texture }, uAlpha: { value: 0 } },
+        transparent: true, depthTest: false, depthWrite: false
+      });
+
+      const loop = [...sets, ...sets];
+      const medias = loop.map((set, index) => {
+        const texture = new Texture(gl, { generateMipmaps: true });
+        const program = new Program(gl, {
+          vertex, fragment, depthTest: false, depthWrite: false, transparent: true,
+          uniforms: {
+            tMap: { value: texture }, uPlaneSizes: { value: [16, 9] }, uImageSizes: { value: [16, 9] },
+            uSpeed: { value: 0 }, uTime: { value: 100 * Math.random() }, uBorderRadius: { value: .045 }, uAlpha: { value: 0 }, uEdge: { value: .004 }
+          }
+        });
+        const media = { set, index, program, extra: 0, alpha: 0, loaded: false };
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.decoding = "async";
+        img.onload = () => {
+          texture.image = img;
+          program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+          media.loaded = true;
+        };
+        img.onerror = () => { if (!img.dataset.retry) { img.dataset.retry = "1"; img.src = `https://i.ytimg.com/vi/${set.id}/hqdefault.jpg`; } };
+        img.src = `https://i.ytimg.com/vi/${set.id}/maxresdefault.jpg`;
+        media.plane = new Mesh(gl, { geometry, program });
+        media.plane.setParent(scene);
+        const { texture: tt, aspect } = textTexture(set.title);
+        media.titleAspect = aspect;
+        media.title = new Mesh(gl, { geometry: new Plane(gl), program: titleProgram(tt) });
+        media.title.setParent(media.plane);
+        return media;
+      });
+
+      const scroll = { current: 0, target: 0, last: 0, ease: reduced ? 1 : .07 };
+      let screen = { w: 1, h: 1 }, viewport = { w: 1, h: 1 }, itemWidth = 1, bend = 3;
+      let activeIndex = -1;
+
+      function resize() {
+        const keep = itemWidth > 1 ? scroll.target / itemWidth : 0;
+        screen = { w: stage.clientWidth || 1, h: stage.clientHeight || 1 };
+        renderer.setSize(screen.w, screen.h);
+        camera.perspective({ aspect: screen.w / screen.h });
+        const vh = 2 * Math.tan((camera.fov * Math.PI / 180) / 2) * camera.position.z;
+        viewport = { w: vh * camera.aspect, h: vh };
+        const mobile = screen.w < 700;
+        bend = mobile ? 1.6 : 3;
+        const planePxW = Math.min(screen.w * (mobile ? .74 : .4), screen.h * .6 * 16 / 9, 620);
+        const planePxH = planePxW * 9 / 16;
+        const gapPx = mobile ? 20 : 40;
+        const sx = viewport.w * planePxW / screen.w;
+        const sy = viewport.h * planePxH / screen.h;
+        itemWidth = sx + viewport.w * gapPx / screen.w;
+        medias.forEach((m) => {
+          m.plane.scale.set(sx, sy, 1);
+          m.program.uniforms.uPlaneSizes.value = [sx, sy];
+          m.x = itemWidth * m.index;
+          // Put the second half of the loop on the left so both sides are filled from the start.
+          m.extra = m.index >= medias.length / 2 + 1 ? itemWidth * medias.length : 0;
+          m.program.uniforms.uEdge.value = 1.2 / planePxH;
+          // Title below the cover (child of the plane, so in plane-local units)
+          const th = .12, tw = th * m.titleAspect * sy / sx;
+          m.title.scale.set(tw, th, 1);
+          m.title.position.y = -.5 - th * .5 - .05;
+        });
+        scene.position.y = viewport.h * .1;
+        scroll.current = scroll.target = scroll.last = Math.round(keep) * itemWidth;
+      }
+
+      function update(time) {
+        scroll.current += (scroll.target - scroll.current) * scroll.ease;
+        const direction = scroll.current > scroll.last ? "right" : "left";
+        const speed = scroll.current - scroll.last;
+        const widthTotal = itemWidth * medias.length;
+        const H = viewport.w / 2;
+        medias.forEach((m) => {
+          const plane = m.plane;
+          plane.position.x = m.x - scroll.current - m.extra;
+          const x = plane.position.x;
+          const R = (H * H + bend * bend) / (2 * bend);
+          const ex = Math.min(Math.abs(x), H);
+          const arc = R - Math.sqrt(R * R - ex * ex);
+          plane.position.y = -arc;
+          plane.rotation.z = -Math.sign(x) * Math.asin(ex / R);
+          const u = m.program.uniforms;
+          if (!reduced) u.uTime.value += .04;
+          u.uSpeed.value = reduced ? 0 : speed;
+          if (m.loaded) m.alpha += (1 - m.alpha) * .08;
+          u.uAlpha.value = m.alpha;
+          m.title.program.uniforms.uAlpha.value = m.alpha * .92;
+          const half = plane.scale.x / 2, edge = viewport.w / 2;
+          if (direction === "right" && x + half < -edge - itemWidth) m.extra -= widthTotal;
+          if (direction === "left" && x - half > edge + itemWidth) m.extra += widthTotal;
+        });
+        scroll.last = scroll.current;
+        renderer.render({ scene, camera });
+
+        const i = ((Math.round(scroll.target / itemWidth) % sets.length) + sets.length) % sets.length;
+        if (i !== activeIndex) {
+          activeIndex = i;
+          indexLabel.textContent = `${pad(i + 1)} / ${pad(sets.length)}`;
+          metaLabel.textContent = `${sets[i].title} · ${sets[i].duration} · ${sets[i].date.slice(0, 4)}`;
+        }
+      }
+
+      const snap = () => { scroll.target = Math.round(scroll.target / itemWidth) * itemWidth; };
+      const go = (dir) => { scroll.target = (Math.round(scroll.target / itemWidth) + dir) * itemWidth; };
+      root.querySelectorAll("[data-dir]").forEach((b) => b.addEventListener("click", () => go(Number(b.dataset.dir))));
+      stage.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") { e.preventDefault(); go(1); }
+        if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
+        if (e.key === "Enter") location.href = `https://www.youtube.com/watch?v=${sets[activeIndex].id}`;
+      });
+
+      // Which cover is under the pointer (undo the plane's bend rotation, then test its box)
+      function hit(clientX, clientY) {
+        const r = stage.getBoundingClientRect();
+        const wx = ((clientX - r.left) / screen.w - .5) * viewport.w;
+        const wy = (.5 - (clientY - r.top) / screen.h) * viewport.h - scene.position.y;
+        for (const m of medias) {
+          const p = m.plane, c = Math.cos(-p.rotation.z), s = Math.sin(-p.rotation.z);
+          const dx = wx - p.position.x, dy = wy - p.position.y;
+          const lx = dx * c - dy * s, ly = dx * s + dy * c;
+          if (Math.abs(lx) <= p.scale.x / 2 && Math.abs(ly) <= p.scale.y / 2) return m;
+        }
+        return null;
+      }
+
+      let drag = null, snapTimer = 0;
+      stage.addEventListener("pointerdown", (e) => {
+        if (e.button > 0) return;
+        drag = { x: e.clientX, y: e.clientY, from: scroll.target, moved: false, id: e.pointerId };
+      });
+      stage.addEventListener("pointermove", (e) => {
+        if (!drag) {
+          if (e.pointerType === "mouse") stage.classList.toggle("is-over-card", !!hit(e.clientX, e.clientY));
+          return;
+        }
+        const dx = e.clientX - drag.x;
+        if (!drag.moved && Math.abs(dx) > 6) {
+          drag.moved = true;
+          stage.classList.add("is-dragging");
+          stage.setPointerCapture(e.pointerId);
+        }
+        if (drag.moved) scroll.target = drag.from - dx * (viewport.w / screen.w) * 1.15;
+      });
+      const end = (e, cancelled) => {
+        if (!drag) return;
+        const wasDrag = drag.moved;
+        stage.classList.remove("is-dragging");
+        drag = null;
+        if (wasDrag) { snap(); return; }
+        if (cancelled) return;
+        const m = hit(e.clientX, e.clientY);
+        if (!m) return;
+        const offset = Math.round((m.plane.position.x) / itemWidth);
+        if (offset === 0) location.href = `https://www.youtube.com/watch?v=${m.set.id}`;
+        else scroll.target += offset * itemWidth;
+      };
+      stage.addEventListener("pointerup", (e) => end(e, false));
+      stage.addEventListener("pointercancel", (e) => end(e, true));
+      stage.addEventListener("pointerleave", () => stage.classList.remove("is-over-card"));
+      // Horizontal wheel / trackpad swipe only: vertical wheel keeps scrolling the page.
+      stage.addEventListener("wheel", (e) => {
+        const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
+        if (!dx) return;
+        e.preventDefault();
+        scroll.target += dx * (viewport.w / screen.w);
+        clearTimeout(snapTimer);
+        snapTimer = setTimeout(snap, 160);
+      }, { passive: false });
+
+      new ResizeObserver(resize).observe(stage);
+      resize();
+
+      let running = false, raf = 0, visible = false;
+      const tick = (t) => { update(t); raf = requestAnimationFrame(tick); };
+      const run = () => { if (!running && visible && !document.hidden) { running = true; raf = requestAnimationFrame(tick); } };
+      const stop = () => { running = false; cancelAnimationFrame(raf); };
+      new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; visible ? run() : stop(); }).observe(stage);
+      document.addEventListener("visibilitychange", () => (document.hidden ? stop() : run()));
+      update(0);
+      root.classList.add("is-ready");
+    }
   </script>
 </body>
 </html>

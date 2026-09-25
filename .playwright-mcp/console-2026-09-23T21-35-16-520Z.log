@@ -1,0 +1,6 @@
+[     499ms] [WARNING] Intercom initialiser called with invalid parameters. @ https://eu-assets.i.posthog.com/static/posthog-recorder.js?v=1.402.3:0
+[     503ms] [WARNING] Intercom initialiser called with invalid parameters. @ https://eu-assets.i.posthog.com/static/posthog-recorder.js?v=1.402.3:0
+[    2840ms] [WARNING] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation @ https://cdn.tailwindcss.com/:63
+[    2964ms] [LOG] [SuperDesign] Preview loaded for versionId: e80245db-8f50-4772-ac88-0a351621274d @ https://component-e80245db-8f50-4772-ac88-0a351621274d.preview.superdesign.dev/?projectId=477d6239-9596-4e4b-a765-cd405af71799:1297
+[    3465ms] [ERROR] Warning: You are importing createRoot from "react-dom" which is not supported. You should instead import it from "react-dom/client". @ https://esm.sh/react-dom@18.3.1/es2022/cjs/react-dom.development.development.mjs:85
+[    6182ms] [LOG] [SuperDesign] Loading modern-screenshot library... @ https://component-e80245db-8f50-4772-ac88-0a351621274d.preview.superdesign.dev/?projectId=477d6239-9596-4e4b-a765-cd405af71799:1322
