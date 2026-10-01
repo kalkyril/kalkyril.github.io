@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Matteo Lugli / kalkyril</title>
-  <meta name="description" content="kalkyril is Matteo Lugli: mathematician, programmer and music producer. Mathematics, research and music in one place.">
+  <title>Matteo Lugli</title>
+  <meta name="description" content="Matteo Lugli is a mathematician working across data science, computer graphics and digital solutions.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Matteo Lugli / kalkyril">
-  <meta property="og:description" content="Matteo Lugli. Mathematics, programming and music.">
+  <meta property="og:title" content="Matteo Lugli">
+  <meta property="og:description" content="Matteo Lugli. Mathematics, data science and computer graphics.">
   <meta property="og:image" content="assets/hero-a.jpg">
   <meta name="theme-color" content="#fdfdfd">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23c8ff00'/></svg>">
@@ -126,31 +126,7 @@
     /* Each line sits in its own mask; the text rolls up and out, the next name rolls in from below. */
     .name-line { display: block; overflow: hidden; padding: .08em .12em .32em 0; margin: -.08em 0 -.32em; }
     .name-line > span { display: block; transform: translateY(0); will-change: transform; }
-    .name-block--alias { font-style: italic; font-weight: 400; letter-spacing: -.035em; }
-    .name-block--alias .name-line > span { transform: translateY(150%); }
-    body.loaded .name-block--real .name-line > span { animation: name-real 10s 2.4s infinite cubic-bezier(.76,0,.24,1); }
-    body.loaded .name-block--real .name-line:nth-child(2) > span { animation-delay: 2.52s; }
-    body.loaded .name-block--alias .name-line > span { animation: name-alias 10s 2.4s infinite cubic-bezier(.76,0,.24,1); }
-    body.loaded .hero-role { animation: name-role 10s 2.4s infinite cubic-bezier(.76,0,.24,1); }
-    @keyframes name-real {
-      0%, 36% { transform: translateY(0); }
-      42% { transform: translateY(-150%); }
-      42.01%, 91% { transform: translateY(150%); }
-      97%, 100% { transform: translateY(0); }
-    }
-    @keyframes name-alias {
-      0%, 42% { transform: translateY(150%); }
-      48.5%, 85% { transform: translateY(0); }
-      91% { transform: translateY(-150%); }
-      91.01%, 100% { transform: translateY(150%); }
-    }
-    /* The subtitle follows the name: it rises by one line while the single-line alias shows, so no empty row is left. */
-    @keyframes name-role {
-      0%, 40% { transform: translateY(0); }
-      47%, 87% { transform: translateY(calc(var(--name-pitch) * -1)); }
-      94%, 100% { transform: translateY(0); }
-    }
-    .hero-role { margin-top: calc(var(--name-size) * .32 + 8px); max-width: 30ch; color: #55555d; font-size: clamp(.92rem, 1.25vw, 1.08rem); line-height: 1.4; letter-spacing: -.005em; }
+    .name-block--alias { display: none; }
 
     .hero-nav { position: absolute; top: max(var(--edge), env(safe-area-inset-top)); right: var(--edge); --d: 6; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
     .hero-nav a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font-size: clamp(1rem, 1.3vw, 1.15rem); font-weight: 500; letter-spacing: -.005em; line-height: 1.3; text-decoration: none; }
@@ -214,36 +190,31 @@
     .step .place a:hover { color: var(--text); }
     .step-note { margin-bottom: 8px; color: var(--text-dim); font-size: .88rem; line-height: 1.5; transition: color .9s var(--ease); }
     .step-note em { color: var(--text); font-style: italic; transition: color .9s var(--ease); }
+    .experience-points { display: grid; gap: 3px; margin: 8px 0 0 16px; color: var(--text-dim); font-size: .88rem; line-height: 1.42; }
+    .experience-points li { padding-left: 0; }
+    .experience-points li::marker { color: var(--violet-deep); }
+    .thesis-line, .supervisor-line { display: block; }
+    .supervisor-line { margin-top: 0; }
     .timeline + .content-label, .projects + .content-label { margin-top: 64px; }
 
-    /* Projects: interactive card stack (drag-to-back, click-to-back, random tilt) */
-    .projects { display: flex; align-items: flex-end; gap: 28px; width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; padding-top: 26px; }
-    .card-stack { position: relative; flex: 0 0 auto; width: min(340px, calc(100% - 72px)); aspect-ratio: 4 / 5; perspective: 1000px; touch-action: pan-y; container-type: inline-size; }
-    .stack-card { --depth: 0; --rot: 0deg; --dx: 0px; --dy: 0px; --rx: 0deg; --ry: 0deg; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 8cqw 7.5cqw; overflow: hidden; border: 1px solid rgba(14,14,16,.08); border-radius: 30px; box-shadow: 0 30px 60px rgba(14,14,16,.1), 0 2px 6px rgba(14,14,16,.05); cursor: grab; user-select: none; -webkit-user-select: none; transform-origin: 50% 60%;
-      transform: translate3d(var(--dx), calc(var(--depth) * -14px + var(--dy)), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot)) scale(calc(1 - var(--depth) * .05));
-      opacity: calc(1 - var(--depth) * .15);
-      transition: transform .75s cubic-bezier(.3,1.45,.45,1), opacity .5s var(--ease), box-shadow .4s var(--ease); }
-    .stack-card.is-dragging { cursor: grabbing; transition: opacity .5s var(--ease), box-shadow .4s var(--ease); box-shadow: 0 40px 80px rgba(14,14,16,.16); }
+    /* Projects: clicking or dragging the top card brings the next one forward. */
+    .projects { width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; padding-top: 26px; }
+    .card-stack { position: relative; width: 100%; height: clamp(350px, 56vw, 430px); perspective: 1000px; touch-action: pan-y; container-type: inline-size; }
+    .stack-card { --depth: 0; --rot: 0deg; --dx: 0px; --dy: 0px; --rx: 0deg; --ry: 0deg; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 8cqw 7.5cqw; overflow: hidden; border: 1px solid rgba(14,14,16,.08); border-radius: 30px; box-shadow: 0 30px 60px rgba(14,14,16,.1), 0 2px 6px rgba(14,14,16,.05); user-select: none; -webkit-user-select: none; transform-origin: 50% 60%; transform: translate3d(var(--dx), calc(var(--depth) * -14px + var(--dy)), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot)) scale(calc(1 - var(--depth) * .05)); opacity: calc(1 - var(--depth) * .15); transition: transform .75s cubic-bezier(.3,1.45,.45,1), opacity .5s var(--ease), box-shadow .4s var(--ease); }
+    .stack-card.is-dragging { transition: opacity .5s var(--ease), box-shadow .4s var(--ease); box-shadow: 0 40px 80px rgba(14,14,16,.16); }
     .stack-card-art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-    .stack-card > :not(.stack-card-art) { position: relative; z-index: 1; }
-    .stack-card-org { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; font-size: clamp(.9rem, 5cqw, 1.05rem); font-weight: 600; letter-spacing: -.01em; text-decoration: none; }
-    .stack-card-org:hover .ne-arrow, .stack-card-org:focus-visible .ne-arrow { transform: translate(3px, -3px); }
-    .stack-card-title { display: block; width: max-content; font: 500 15.5cqw/.9 var(--serif); letter-spacing: -.03em; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat; padding-bottom: .06em; transition: background-size .5s var(--ease-out); }
-    .stack-card-title:hover, .stack-card-title:focus-visible { background-size: 100% 2px; }
+    .stack-card-open { position: absolute; inset: 0; z-index: 1; width: 100%; border: 0; background: transparent; cursor: grab; touch-action: pan-y; }
+    .is-dragging .stack-card-open { cursor: grabbing; }
+    .stack-card-open:focus-visible { outline: 3px solid var(--violet-deep); outline-offset: -6px; border-radius: inherit; }
+    .stack-card-org, .stack-card-foot { position: relative; z-index: 0; pointer-events: none; }
+    .stack-card-org { align-self: flex-start; font-size: clamp(.9rem, 5cqw, 1.05rem); font-weight: 600; letter-spacing: -.01em; }
+    .stack-card-title { display: block; max-width: 100%; font: 500 clamp(1.6rem, 8cqw, 2rem)/1.05 var(--serif); letter-spacing: -.03em; text-wrap: balance; }
     .stack-card-place { margin-top: 12px; font: .72rem/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
-    .stack-card a { -webkit-user-drag: none; }
-    .stack-card--paper { background: #fff; color: var(--ink); }
-    .stack-card--paper .stack-card-art { background: radial-gradient(circle, rgba(14,14,16,.2) 1px, transparent 1.5px) 0 0 / 18px 18px; -webkit-mask-image: radial-gradient(120% 70% at 80% 30%, #000, transparent 70%); mask-image: radial-gradient(120% 70% at 80% 30%, #000, transparent 70%); }
     .stack-card--ink { background: #0e0e10; color: #f4f4f6; border-color: rgba(255,255,255,.08); }
     .stack-card--ink .stack-card-title { color: var(--accent); }
     .stack-card--ink .stack-card-art { background: repeating-radial-gradient(circle at 100% 0%, transparent 0 22px, rgba(200,255,0,.2) 22px 23px); -webkit-mask-image: linear-gradient(200deg, #000 20%, transparent 75%); mask-image: linear-gradient(200deg, #000 20%, transparent 75%); }
     .stack-card--lime { background: var(--accent); color: var(--ink); }
     .stack-card--lime .stack-card-art { background: repeating-linear-gradient(-45deg, transparent 0 13px, rgba(14,14,16,.1) 13px 14px); -webkit-mask-image: linear-gradient(to bottom, #000 10%, transparent 62%); mask-image: linear-gradient(to bottom, #000 10%, transparent 62%); }
-    .stack-shuffle { display: grid; place-items: center; flex: 0 0 auto; width: 46px; height: 46px; margin-bottom: 6px; border: 1px solid var(--border); border-radius: 50%; background: var(--bg); color: var(--text); cursor: pointer; box-shadow: 0 8px 20px rgba(14,14,16,.08); transition: transform .25s var(--ease-out), border-color .25s, background-color .9s var(--ease), color .9s var(--ease); }
-    .stack-shuffle:hover { transform: scale(1.08); border-color: var(--border-hi); }
-    .stack-shuffle:active { transform: scale(.94); }
-    .stack-shuffle svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .5s var(--ease-out); }
-    .stack-shuffle:hover svg { transform: rotate(180deg); }
     .thesis { display: inline-flex; margin-top: 3px; color: var(--text); font: .72rem/1.3 var(--mono); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 4px; transition: color .25s; }
     .thesis:hover { color: var(--violet-deep); }
 
@@ -331,9 +302,12 @@
     .timeline:hover::after, .release-card:hover::before, .release-card:focus-visible::before { opacity: 1; filter: drop-shadow(0 0 7px color-mix(in srgb, var(--beam-color) 55%, transparent)); }
     .play { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px; border: 1px solid rgba(255,255,255,.34); border-radius: 50%; background: rgba(0,0,0,.35); color: #fff; backdrop-filter: blur(6px); transition: transform .4s var(--ease), background .4s; }
 
-    footer { position: relative; z-index: 1; padding: 64px 0 26px; border-top: 1px solid rgba(255,255,255,.08); background: rgba(8,8,10,.86); color: #f4f4f6; backdrop-filter: blur(16px); }
+    footer { position: relative; z-index: 1; padding: 64px 0 26px; border-top: 1px solid rgba(255,255,255,.08); background: #09090b; color: #f4f4f6; backdrop-filter: blur(16px); }
     .footer-inner { display: flex; flex-direction: column; align-items: center; color: #8a8a93; }
     .footer-signature { margin-bottom: 30px; color: #f4f4f6; font: italic 400 clamp(2.4rem, 7vw, 4.6rem)/1 var(--serif); letter-spacing: -.035em; }
+    .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(18px, 4vw, 36px); margin-bottom: 22px; }
+    .footer-nav a { color: #f4f4f6; font-size: .9rem; font-weight: 600; text-decoration: none; }
+    .footer-nav a:hover, .footer-nav a:focus-visible { color: var(--music); }
     .footer-social-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
     .footer-social-links .social-link { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; color: #f4f4f6; text-decoration: none; transition: transform .3s var(--ease-out), color .25s; }
     .footer-social-links .social-link:hover { transform: translateY(-2px); color: var(--music); }
@@ -363,13 +337,25 @@
     @media (min-width: 761px) and (max-width: 1080px) {
       .section-head, .content-label, .timeline, .projects, .releases, .cgallery-foot, .music-links, .equipment-board { margin-inline: auto; }
     }
+    @media (max-width: 1080px) {
+      .section-intro { max-width: none; }
+      .hero-title { left: 50%; top: clamp(120px, 17svh, 190px); width: max-content; max-width: calc(100% - 36px); text-align: center; transform: translateX(-50%); z-index: 5; }
+      .hero-title .name-block { align-items: center; }
+      .hero-title .name-cycle { margin-inline: auto; }
+      .hero-img { bottom: 0; }
+      .hero-nav { top: max(24px, env(safe-area-inset-top)); }
+    }
     @media (max-width: 760px) {
       .wrap { width: min(var(--maxw), calc(100% - 36px)); }
       .journey .wrap { padding-left: 22px; }
-      .hero-img { bottom: clamp(100px, 15svh, 150px); }
-      .hero-title, .hero-nav { top: max(26px, env(safe-area-inset-top)); }
-      .hero-title { max-width: 62vw; }
-      .hero-title { --name-size: clamp(2.7rem, 13.2vw, 4.4rem); }
+      .hero-img { bottom: 0; width: min(150vw, calc(100svh * 1.15)); }
+      .hero-nav { top: max(26px, env(safe-area-inset-top)); }
+      .hero-title { left: 50%; top: clamp(112px, 17svh, 190px); width: max-content; max-width: calc(100% - 36px); text-align: center; transform: translateX(-50%); z-index: 5; }
+      .hero-title .name-block { align-items: center; }
+      .hero-title .name-cycle { margin-inline: auto; }
+      .hero-stage { z-index: 1; }
+      .hero-reveal { z-index: 2; }
+      .hero-title { --name-size: clamp(2.7rem, 12vw, 5.4rem); }
       .hero-role { max-width: 22ch; line-height: 1.55; }
       .hero-nav { gap: 4px; }
       .hero-nav a { font-size: .88rem; gap: 6px; }
@@ -378,17 +364,17 @@
       .hero-social .social-link { width: 38px; height: 44px; }
       .hero-social .social-link svg { width: 18px; height: 18px; }
       .hero-foot { bottom: max(27px, env(safe-area-inset-bottom)); }
-      .site-nav { top: auto; bottom: max(16px, env(safe-area-inset-bottom)); width: min(100% - 32px, 370px); transform: translate(-50%, 150%); }
+      .site-nav { top: max(14px, env(safe-area-inset-top)); bottom: auto; width: min(100% - 32px, 370px); transform: translate(-50%, -140%); }
       .site-nav.scrolled { transform: translate(-50%, 0); }
       .nav-links { justify-content: space-around; padding: 6px; }
       .nav-links a { flex: 1; padding: 11px 6px; font-size: .85rem; text-align: center; }
-      section { padding-block: clamp(100px, 13svh, 140px); scroll-margin-top: 24px; }
+      section { padding-block: clamp(100px, 13svh, 140px); scroll-margin-top: 80px; }
       #about { padding-top: 114px; }
       .section-head, .content-label, .timeline, .projects, .releases, .cgallery-foot, .music-links, .equipment-board { width: 100%; margin-left: 0; }
       .section-head { margin-bottom: 54px; }
       .section-index { margin-bottom: 20px; }
       h2 { font-size: clamp(3.4rem, 14vw, 5rem); }
-      .section-intro { max-width: 38ch; margin-top: 28px; font-size: 1rem; line-height: 1.85; text-wrap: pretty; }
+      .section-intro { margin-top: 28px; font-size: 1rem; line-height: 1.65; text-wrap: pretty; }
       .content-label { margin-bottom: 24px; font-size: 1.6rem; }
       .timeline + .content-label, .projects + .content-label { margin-top: 74px; }
       .timeline { padding: 32px 20px 38px 46px; }
@@ -398,9 +384,8 @@
       .timeline-dot { left: -26px; }
       .step h3 { margin: 3px 0 10px; line-height: 1.3; }
       .step .place { margin-bottom: 11px; }
-      .step-note { margin-bottom: 16px; line-height: 1.65; }
-      .projects { gap: 16px; padding-top: 20px; }
-      .card-stack { width: min(340px, calc(100% - 66px)); }
+      .step-note { margin-bottom: 16px; line-height: 1.45; }
+      .projects { padding-top: 20px; }
       .release-card { grid-template-columns: minmax(0, 1fr) auto; }
       .release-cover-wrap { grid-column: 1 / -1; width: 100%; aspect-ratio: 1; }
       .release-card-copy { padding: 22px 20px 24px; }
@@ -417,9 +402,10 @@
       .equipment-rig::after, .equipment-diagram { display: none; }
       .equipment-callout { position: static; display: flex; align-items: center; justify-content: center; min-height: 42px; padding: 8px; font-size: .68rem; text-align: center; }
       .play { width: clamp(26px, 7vw, 36px); height: clamp(26px, 7vw, 36px); flex-basis: clamp(26px, 7vw, 36px); font-size: .72rem; }
-      footer { padding: 72px 0 108px; overflow: hidden; background: #050509; backdrop-filter: none; }
+      footer { padding: 72px 0 108px; overflow: hidden; background: #09090b; backdrop-filter: none; }
       .footer-inner { align-items: stretch; }
       .footer-signature { margin-bottom: 26px; }
+      .footer-nav { justify-content: flex-start; margin-bottom: 28px; }
       .footer-social-links { justify-content: space-between; gap: 0; margin-bottom: 46px; }
       .footer-meta { display: flex; flex-direction: column; align-items: flex-start; margin-top: 0; }
       .language-switcher { order: 1; gap: 18px; }
@@ -451,6 +437,12 @@
       .release-panel.is-open .platform-row { animation: none; opacity: 1; transform: none; }
       body.language-swap [data-i18n], body.language-swap [data-i18n-html] { animation: none; }
     }
+
+    .hero-title { --name-pitch: 0; }
+    .name-cycle { clip-path: inset(-10% 100% -20% -6%); }
+    .stack-card-direct { position: absolute; top: 23px; right: 23px; z-index: 2; display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid currentColor; border-radius: 50%; color: inherit; text-decoration: none; transition: transform .25s var(--ease-out), background-color .25s; }
+    .stack-card-direct:hover, .stack-card-direct:focus-visible { transform: translate(2px, -2px); background: rgba(255,255,255,.15); }
+    .stack-card-direct .ne-arrow { width: 19px; height: 19px; }
   </style>
 </head>
 <body id="top">
@@ -460,9 +452,8 @@
   <nav class="site-nav" aria-label="Main navigation">
     <div class="nav-links">
       <a href="#top" data-i18n="navHome">Home</a>
-      <a href="#about" data-i18n="navAbout">About</a>
       <a href="https://github.com/kalkyril" data-i18n="navCode">Code</a>
-      <a href="#music" data-i18n="navMusic">Music</a>
+      <a href="index_music.html" data-i18n="navMusic">Music</a>
     </div>
   </nav>
 
@@ -470,7 +461,7 @@
     <header class="hero" id="hero">
       <div class="hero-stage">
         <!-- IMAGE ONE: base portrait (16:9). Swap the src to replace it. -->
-        <img class="hero-img profile" src="assets/hero-a.webp" alt="kalkyril's avatar" width="2011" height="1131" fetchpriority="high" decoding="async">
+        <img class="hero-img profile" src="assets/hero-a.webp" alt="Portrait of Matteo Lugli" width="2011" height="1131" fetchpriority="high" decoding="async">
       </div>
       <canvas class="hero-waves" aria-hidden="true"></canvas>
       <!-- IMAGE TWO: revealed by the blob cursor. data-bg = its background colour (fills outside the image on portrait screens). -->
@@ -478,17 +469,14 @@
 
       <div class="hero-ui">
         <div class="hero-title depth">
-          <h1 class="name-cycle" aria-label="Matteo Lugli — kalkyril">
+          <h1 class="name-cycle" aria-label="Matteo Lugli">
             <span class="name-block name-block--real" aria-hidden="true"><span class="name-line"><span>Matteo</span></span><span class="name-line"><span>Lugli</span></span></span>
-            <span class="name-block name-block--alias" aria-hidden="true"><span class="name-line"><span>kalkyril</span></span></span>
           </h1>
-          <p class="hero-role hero-enter" style="--in:.9s" data-i18n="heroCopy">Math, code and music.</p>
         </div>
 
         <nav class="hero-nav depth hero-enter" style="--in:.6s" aria-label="Sections">
-          <a href="#about"><span data-i18n="navAbout">About</span><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
           <a href="https://github.com/kalkyril"><span data-i18n="navCode">Code</span><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-          <a href="#music"><span data-i18n="navMusic">Music</span><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+          <a href="index_music.html"><span data-i18n="navMusic">Music</span><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
         </nav>
 
         <div class="hero-foot depth hero-enter" style="--in:1.1s">
@@ -508,21 +496,6 @@
           <a class="social-link" href="https://www.linkedin.com/in/matteolugli/" aria-label="LinkedIn" title="LinkedIn">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V8.98h3.42v1.57h.05c.48-.9 1.64-1.85 3.37-1.85 3.61 0 4.27 2.37 4.27 5.46v6.29zM5.32 7.41a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.1 20.45H3.54V8.98H7.1v11.47zM22.23 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.73V1.73C24 .77 23.21 0 22.23 0z"/></svg>
           </a>
-          <a class="social-link social-link--music" href="https://open.spotify.com/intl-it/artist/0U8PNryoCpTAyhakEy3Bdw?si=WFnb3Vm3QTWHq3QEw0waLw" aria-label="Spotify" title="Spotify">
-            <svg class="spotify-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="11"/>
-              <path class="spotify-wave" d="M6.4 9.2c3.85-1.1 8.1-.8 11.3 1M7 12.3c3.25-.85 6.85-.55 9.55.9M7.6 15.25c2.65-.62 5.45-.38 7.65.72"/>
-            </svg>
-          </a>
-          <a class="social-link social-link--music" href="https://www.youtube.com/@kalkyril" aria-label="YouTube" title="YouTube">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.12-2.13C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.52A3 3 0 0 0 .5 6.2C0 8.08 0 12 0 12s0 3.92.5 5.8a3 3 0 0 0 2.12 2.13c1.88.52 9.38.52 9.38.52s7.5 0 9.38-.52a3 3 0 0 0 2.12-2.13C24 15.92 24 12 24 12s0-3.92-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg>
-          </a>
-          <a class="social-link social-link--music" href="https://soundcloud.com/kalkyril" aria-label="SoundCloud" title="SoundCloud">
-            <svg class="soundcloud-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path class="soundcloud-wave" d="M2 14.5v2M4.5 12.5v5M7 10v7.5M9.5 8v9.5"/>
-              <path d="M11 17.5h8.2a3.3 3.3 0 0 0 .35-6.58A5.25 5.25 0 0 0 10 8.15v9.35z"/>
-            </svg>
-          </a>
         </div>
       </div>
     </header>
@@ -541,18 +514,40 @@
           <div>
             <span class="section-index">01</span>
             <h2 data-i18n="aboutTitle">About</h2>
-            <p class="section-intro" data-i18n-html="aboutIntro">Write here self presentation.</p>
+            <p class="section-intro" data-i18n-html="aboutIntro">Mathematician with a Master’s degree in Mathematics (Data Science), awarded with honors, and training in Computer Graphics, differential geometry, numerical methods, and machine learning. Combines a quantitative background with experience in digital development, technical analysis, and project coordination.</p>
           </div>
         </div>
+        <h3 id="experience" class="content-label reveal" data-i18n="experienceLabel">Experience</h3>
+        <div class="timeline reveal" aria-label="Work experience" data-i18n-aria="experienceAria">
+          <article class="step reveal">
+            <span class="timeline-dot" aria-hidden="true"></span><time datetime="2026-09" data-i18n="currentDate">2026 —</time>
+            <div><h3 data-i18n="digitalLead">Digital Solution Lead</h3><p class="place">Sunoikeo di Lena Ferrari · Castelfranco Emilia (MO)</p>
+              <ul class="experience-points"><li data-i18n="sunoikeoTask1">Implementation and optimisation of IT and technology solutions for the company</li><li data-i18n="sunoikeoTask2">Website development and management (ongoing)</li></ul>
+            </div>
+          </article>
+          <article class="step reveal">
+            <span class="timeline-dot" aria-hidden="true"></span><time datetime="2026-09" data-i18n="currentDate">2026 —</time>
+            <div><h3 data-i18n="digitalLead">Digital Solution Lead</h3><p class="place" data-i18n="lawFirm">Law Firm of Lara Ferrari · Modena</p>
+              <ul class="experience-points"><li data-i18n="lawFirmTask1">Implementation and optimisation of IT and technical solutions for the law firm</li><li data-i18n="lawFirmTask2">Website development and management (ongoing)</li></ul>
+            </div>
+          </article>
+          <article class="step reveal">
+            <span class="timeline-dot" aria-hidden="true"></span><time datetime="2021-09" data-i18n="pastDate">2021 — 2026</time>
+            <div><h3 data-i18n="coordinator">Project and Tender Coordinator</h3><p class="place">Sunoikeo di Lena Ferrari · Castelfranco Emilia (MO)</p>
+              <ul class="experience-points"><li data-i18n="coordinatorTask1">Participation in tenders and calls for proposals, preparing supporting materials for complex public and private initiatives</li><li data-i18n="coordinatorTask2">Coordination of design and development activities in the adaptive reuse of complex buildings for private clients</li></ul>
+            </div>
+          </article>
+        </div>
+
         <h3 class="content-label reveal" data-i18n="educationLabel">Education</h3>
         <div class="timeline reveal" aria-label="Education timeline" data-i18n-aria="educationAria">
           <article class="step reveal">
             <span class="timeline-dot" aria-hidden="true"></span>
             <time datetime="2026-09" data-i18n="mscDate">Sep 2026</time>
             <div>
-              <h3><a href="https://fim.unimore.it/it" data-i18n="mscTitle">MSc cum laude in Mathematics (Data Science) [LM40]</a></h3>
+              <h3><a href="https://fim.unimore.it/it" data-i18n="mscTitle">Master’s degree with honors in Mathematics (Data Science) [LM40]</a></h3>
               <p class="place"><a href="https://www.unimore.it/it" data-i18n="university">University of Modena and Reggio Emilia</a></p>
-              <p class="step-note" data-i18n-html="mscThesisInfo">Thesis</p>
+              <p class="step-note" data-i18n-html="mscThesisInfo"><span class="thesis-line">Thesis: <em>On smooth atlases over triangle meshes</em></span><span class="supervisor-line">Supervisors: Prof. Fabio Pellacini and Prof. Claudio Mancinelli</span></p>
               <a class="thesis" href="msc-thesis.html" data-i18n="mscThesis">Read my MSc thesis</a>
             </div>
           </article>
@@ -560,9 +555,9 @@
             <span class="timeline-dot" aria-hidden="true"></span>
             <time datetime="2024-04" data-i18n="bscDate">Apr 2024</time>
             <div>
-              <h3><a href="https://fim.unimore.it/it" data-i18n="bscTitle">BSc in Mathematics</a></h3>
+              <h3><a href="https://fim.unimore.it/it" data-i18n="bscTitle">Bachelor’s degree in Mathematics [L35]</a></h3>
               <p class="place"><a href="https://www.unimore.it/it" data-i18n="university">University of Modena and Reggio Emilia</a></p>
-              <p class="step-note" data-i18n-html="bscThesisInfo">Thesis</p>
+              <p class="step-note" data-i18n-html="bscThesisInfo"><span class="thesis-line">Thesis: <em>Sulla disuguaglianza isoperimetrica</em></span><span class="supervisor-line">Supervisor: Prof. Carlo Mercuri</span></p>
               <a class="thesis" href="bsc-thesis.html" data-i18n="bscThesis">Read my BSc thesis</a>
             </div>
           </article>
@@ -571,184 +566,32 @@
         <h3 class="content-label reveal" data-i18n="projectsLabel">Projects</h3>
         <div class="projects reveal">
           <div class="card-stack" data-card-stack aria-label="Projects" data-i18n-aria="projectsAria">
-            <article class="stack-card stack-card--lime">
+            <article class="stack-card stack-card--lime" data-project="extreme">
               <span class="stack-card-art" aria-hidden="true"></span>
-              <a class="stack-card-org" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">Clust-ER Build<svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-              <div class="stack-card-foot">
-                <a class="stack-card-title" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">EXTREME</a>
-                <p class="stack-card-place" data-i18n="projectPlace">Bologna (BO), Italy</p>
-              </div>
+              <button class="stack-card-open" type="button" aria-label="Next card" data-i18n-aria="stackNext"></button>
+              <span class="stack-card-org">Clust-ER Build</span>
+              <a class="stack-card-direct" href="https://build.clust-er.it/extreme-infrastrutture-critiche/" target="_blank" rel="noopener" aria-label="EXTREME — official page"><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+              <div class="stack-card-foot"><strong class="stack-card-title" data-i18n="extremeTitle">EXTREME — Extreme Events and Critical Infrastructure</strong><p class="stack-card-place" data-i18n="extremePlace">Bologna · Jan 2026</p></div>
             </article>
-            <article class="stack-card stack-card--ink">
+            <article class="stack-card stack-card--ink" data-project="innovation">
               <span class="stack-card-art" aria-hidden="true"></span>
-              <a class="stack-card-org" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">Clust-ER Build<svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-              <div class="stack-card-foot">
-                <a class="stack-card-title" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">EXTREME</a>
-                <p class="stack-card-place" data-i18n="projectPlace">Bologna (BO), Italy</p>
-              </div>
-            </article>
-            <article class="stack-card stack-card--paper">
-              <span class="stack-card-art" aria-hidden="true"></span>
-              <a class="stack-card-org" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">Clust-ER Build<svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-              <div class="stack-card-foot">
-                <a class="stack-card-title" href="https://build.clust-er.it/en/extreme-critical-infrastructures/" target="_blank" rel="noopener">EXTREME</a>
-                <p class="stack-card-place" data-i18n="projectPlace">Bologna (BO), Italy</p>
-              </div>
+              <button class="stack-card-open" type="button" aria-label="Next card" data-i18n-aria="stackNext"></button>
+              <span class="stack-card-org">Clust-ER Build</span>
+              <a class="stack-card-direct" href="https://build.clust-er.it/news/innovazione-e-sostenibilita-per-la-rigenerazione-inclusiva-della-costa-romagnola/" target="_blank" rel="noopener" aria-label="Innovation and sustainability — official page"><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+              <div class="stack-card-foot"><strong class="stack-card-title" data-i18n="innovationTitle">Innovation and sustainability for the inclusive regeneration of the Romagna coast</strong><p class="stack-card-place" data-i18n="innovationPlace">Cervia · May 2023</p></div>
             </article>
           </div>
-          <button class="stack-shuffle" type="button" aria-label="Next card" data-i18n-aria="stackNext">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.3 6.4L3 16M3 21v-5h5"/></svg>
-          </button>
         </div>
-
       </div>
     </section>
 
-    <section id="music">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <div>
-            <span class="section-index">02</span>
-            <h2 data-i18n="musicTitle">Music</h2>
-            <p class="section-intro" data-i18n="musicManifesto">I kinda like making music.</p>
-          </div>
-        </div>
-        <h3 class="content-label reveal" data-i18n="releasesLabel">Releases</h3>
-        <div class="releases reveal" aria-label="Music releases">
-          <button class="release-card" type="button" aria-controls="release-panel" aria-expanded="false">
-            <span class="release-cover-wrap"><img class="release-cover" src="assets/back-in-my-arms.jpg" alt="Back In My Arms cover artwork" width="440" height="440"></span>
-            <span class="release-card-copy">
-              <span class="release-kicker" data-i18n="releaseSingle">Single</span>
-              <strong>Back In My Arms</strong>
-              <small>kalkyril</small>
-            </span>
-            <span class="release-open play" aria-hidden="true">▶</span>
-          </button>
-        </div>
-        <h3 class="content-label live-sets-heading reveal" data-i18n="liveSetsLabel">Live sets</h3>
-        <div class="cgallery" id="sets" aria-label="Live sets">
-          <div class="cgallery-stage" tabindex="0" aria-hidden="true"></div>
-          <div class="cgallery-foot">
-            <p class="cgallery-caption" aria-live="polite"><span class="cgallery-index">01 / 05</span><span class="cgallery-meta"></span></p>
-            <div class="cgallery-controls">
-              <button type="button" data-dir="-1" aria-label="Previous set" data-i18n-aria="setPrev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-              <button type="button" data-dir="1" aria-label="Next set" data-i18n-aria="setNext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-            </div>
-          </div>
-          <ul class="cgallery-list"></ul>
-        </div>
-        <h3 class="content-label equipment-heading reveal" data-i18n="equipmentLabel">Equipment</h3>
-        <div class="equipment-board reveal" aria-label="DJ equipment">
-          <figure class="equipment-rig" aria-label="DJ setup">
-            <img class="equipment-photo" src="assets/kalkyril_equipment.jpg" alt="Matteo Lugli performing with Denon DJ equipment" width="2400" height="813">
-            <a class="equipment-callout equipment-callout--lc6000" href="https://www.denondj.com/lc6000prime.html">Denon LC6000</a>
-            <a class="equipment-callout equipment-callout--headphones" href="https://aiaiai.audio/headphones/tma-2">AIAIAI TMA-2 DJ</a>
-            <a class="equipment-callout equipment-callout--x1850" href="https://www.denondj.com/x1850%20prime-x1850primexus.html">Denon X1850</a>
-            <a class="equipment-callout equipment-callout--sc6000" href="https://www.denondj.com/sc6000-prime.html">Denon SC6000</a>
-            <svg class="equipment-diagram" viewBox="0 0 1000 339" role="img" aria-label="Equipment labels" preserveAspectRatio="none">
-              <polyline class="callout-line" points="202,142 158,62 34,62"/>
-              <rect class="callout-marker" x="197" y="137" width="10" height="10"/>
-
-              <polyline class="callout-line" points="658,118 628,58 562,58"/>
-              <rect class="callout-marker" x="653" y="113" width="10" height="10"/>
-
-              <polyline class="callout-line" points="485,203 462,306 404,306"/>
-              <rect class="callout-marker" x="480" y="198" width="10" height="10"/>
-
-              <polyline class="callout-line" points="754,145 833,62 966,62"/>
-              <rect class="callout-marker" x="749" y="140" width="10" height="10"/>
-            </svg>
-          </figure>
-        </div>
-      </div>
-    </section>
     </div>
   </main>
 
-  <div class="release-panel" id="release-panel" aria-hidden="true" aria-labelledby="release-platform-label">
-    <div class="release-panel-inner">
-      <div class="release-panel-shell">
-        <p class="release-platform-label" id="release-platform-label" data-i18n="releaseChoosePlatform">Choose a streaming platform</p>
-        <div class="release-platforms">
-          <div class="platform-row" style="--delay:0ms">
-            <span class="platform-mark platform-mark--youtube" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="5" fill="currentColor"/><path d="m10 8 6 4-6 4Z" fill="#ff0033"/></svg></span>
-            <span class="platform-name">YouTube</span>
-            <a class="platform-listen" href="https://www.youtube.com/watch?v=ZsrMmJLvzao" data-official-video data-i18n="officialVideo">Official video</a>
-          </div>
-          <div class="platform-row" style="--delay:20ms">
-            <span class="platform-mark platform-mark--apple" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M17.4 4.8 8.1 6.65v8.05a2.85 2.85 0 1 0 1.55 2.53V9.05l6.2-1.24v5.37a2.85 2.85 0 1 0 1.55 2.53V4.8Z" fill="currentColor"/>
-              </svg>
-            </span>
-            <span class="platform-name">Apple Music</span>
-            <a class="platform-listen" href="https://music.apple.com/it/album/6794856893?app=music&amp;at=1l3vpUI&amp;ct=LFV_b7f253237e5db171d36b6481e60d78f5&amp;itscg=30440&amp;itsct=catchall_p1&amp;lId=216740801&amp;cId=none&amp;sr=1&amp;src=Linkfire&amp;ls=1" data-i18n="listen">Listen</a>
-          </div>
-          <div class="platform-row" style="--delay:40ms">
-            <span class="platform-mark platform-mark--spotify" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" fill="currentColor"/>
-                <path d="M6.8 9.2c3.7-1.05 7.8-.72 10.75.94M7.4 12.15c3.05-.78 6.42-.48 8.85.86M8 15c2.45-.55 5.05-.31 7.02.71" fill="none" stroke="#1ed760" stroke-width="1.45" stroke-linecap="round"/>
-              </svg>
-            </span>
-            <span class="platform-name">Spotify</span>
-            <a class="platform-listen" href="https://open.spotify.com/intl-it/track/2dyewiRtKPjFkpyulG0CTw?si=81196d75ee994e32" data-i18n="listen">Listen</a>
-          </div>
-          <div class="platform-row" style="--delay:60ms">
-            <span class="platform-mark platform-mark--soundcloud" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M3 13.8v3.4M5.2 12.5v4.7M7.4 10.8v6.4M9.6 9.4v7.8M11.2 17.2V9.1a5.2 5.2 0 0 1 9.2 3.3h.25a2.4 2.4 0 1 1 0 4.8H11.2Z" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            <span class="platform-name">SoundCloud</span>
-            <a class="platform-listen" href="https://soundcloud.com/kalkyril/backinmyarms" data-i18n="listen">Listen</a>
-          </div>
-          <div class="platform-row" style="--delay:80ms">
-            <span class="platform-mark platform-mark--itunes" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="9.25" fill="none" stroke="currentColor" stroke-width="1.45"/>
-                <path d="M15.9 6.7 10 7.9v6.65a2.55 2.55 0 1 0 1.4 2.27V10l3.1-.62v3.8a2.55 2.55 0 1 0 1.4 2.27V6.7Z" fill="currentColor"/>
-              </svg>
-            </span>
-            <span class="platform-name">iTunes</span>
-            <a class="platform-listen" href="https://music.apple.com/it/album/6794856893?app=itunes&amp;at=1l3vpUI&amp;ct=LFV_b7f253237e5db171d36b6481e60d78f5&amp;itscg=30440&amp;itsct=catchall_p3&amp;lId=216740801&amp;cId=none&amp;sr=3&amp;src=Linkfire&amp;ls=1" data-i18n="listen">Listen</a>
-          </div>
-          <div class="platform-row" style="--delay:100ms">
-            <span class="platform-mark platform-mark--deezer" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <rect x="3" y="14" width="3" height="5" rx=".5"/><rect x="7" y="11" width="3" height="8" rx=".5"/><rect x="11" y="8" width="3" height="11" rx=".5"/><rect x="15" y="5" width="3" height="14" rx=".5"/><rect x="19" y="10" width="2" height="9" rx=".5"/>
-              </svg>
-            </span>
-            <span class="platform-name">Deezer</span>
-            <a class="platform-listen" href="https://www.deezer.com/album/1038550412?app_id=140685&amp;utm_source=partner_linkfire&amp;utm_campaign=b7f253237e5db171d36b6481e60d78f5&amp;utm_medium=Original&amp;utm_term=prod&amp;utm_content=album-1038550412" data-i18n="listen">Listen</a>
-          </div>
-          <div class="platform-row" style="--delay:120ms">
-            <span class="platform-mark platform-mark--amazon" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M14.8 14.6c-.72.54-1.75 1.02-2.82 1.02-1.58 0-2.7-.95-2.7-2.48 0-1.2.65-2.04 1.77-2.52.96-.41 2.3-.49 3.58-.49v-.46c0-1.04-.37-1.62-1.47-1.62-.85 0-1.36.44-1.51 1.25l-1.9-.18c.28-1.72 1.72-2.65 3.56-2.65 2.2 0 3.45 1.07 3.45 3.2v3.52c0 .78.08 1.31.49 1.94l-1.84 1.15c-.3-.43-.5-.91-.61-1.68Zm-.17-3.12c-1.81 0-3.17.27-3.17 1.48 0 .65.42 1.09 1.17 1.09.76 0 1.49-.42 2-.92v-1.65Z" fill="currentColor"/>
-                <path d="M5.2 18.2c3.55 2.08 8.7 2.28 12.62.33M16.9 17.5l1.65.12-.62 1.52" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            <span class="platform-name">Amazon Music</span>
-            <a class="platform-listen" href="https://music.amazon.com/albums/B0HBNFDRBW?tag=linkfiregen&amp;ie=UTF8&amp;linkCode=as2&amp;ascsubtag=b7f253237e5db171d36b6481e60d78f5&amp;ref=dmm_acq_soc_it_u_lfire_lp_x_b7f253237e5db171d36b6481e60d78f5" data-i18n="listen">Listen</a>
-          </div>
-          <div class="platform-row" style="--delay:140ms">
-            <span class="platform-mark platform-mark--tidal" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="4,7 7,4 10,7 7,10"/><polygon points="10,7 13,4 16,7 13,10"/><polygon points="16,7 19,4 22,7 19,10"/><polygon points="10,13 13,10 16,13 13,16"/>
-              </svg>
-            </span>
-            <span class="platform-name">Tidal</span>
-            <a class="platform-listen" href="https://www.tidal.com/album/546568043" data-i18n="listen">Listen</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <footer>
     <div class="wrap footer-inner">
-      <p class="footer-signature" aria-hidden="true">kalkyril</p>
+      <p class="footer-signature" aria-hidden="true">Matteo Lugli</p>
+      <nav class="footer-nav" aria-label="Footer navigation" data-i18n-aria="footerNavAria"><a href="#top" data-i18n="navHome">Home</a><a href="https://github.com/kalkyril" data-i18n="navCode">Code</a><a href="index_music.html" data-i18n="navMusic">Music</a></nav>
       <div class="footer-social-links" aria-label="Social profiles"></div>
       <div class="footer-meta">
         <div class="language-switcher" role="group" aria-label="Language">
@@ -757,7 +600,7 @@
           <button type="button" data-lang="fr" data-label="FRA" aria-pressed="false"><span>FRA</span></button>
           <button type="button" data-lang="es" data-label="ESP" aria-pressed="false"><span>ESP</span></button>
         </div>
-        <p class="footer-copyright">© 2026 Matteo Lugli / kalkyril</p>
+        <p class="footer-copyright">© 2026 Matteo Lugli</p>
         <p class="footer-built" data-i18n="footerBuilt">Built from scratch</p>
       </div>
     </div>
@@ -785,9 +628,32 @@
 
     const TRANSLATIONS = {
       en: {
-        pageTitle: "Matteo Lugli / kalkyril",
-        metaDescription: "kalkyril is Matteo Lugli: mathematician, programmer and music producer. Mathematics, research and music in one place.",
-        ogDescription: "Matteo Lugli. Mathematics, programming and music.",
+        footerNavAria: "Footer navigation",
+        innovationTitle: "Innovation and sustainability for the inclusive regeneration of the Romagna coast",
+        extremeTitle: "EXTREME — Extreme Events and Critical Infrastructure",
+        coordinatorTask2: "Coordination of design and development activities in the adaptive reuse of complex buildings for private clients",
+        coordinatorTask1: "Participation in tenders and calls for proposals, preparing supporting materials for complex initiatives across the public and private sectors",
+        lawFirmTask2: "Website development and management (ongoing)",
+        lawFirmTask1: "Implementation and optimisation of IT and technical solutions for the law firm",
+        sunoikeoTask2: "Website development and management (ongoing)",
+        sunoikeoTask1: "Implementation and optimisation of IT and technology solutions for the company",
+        experienceLabel: "Experience",
+        experienceAria: "Work experience",
+        currentDate: "2026 —",
+        pastDate: "2021 — 2026",
+        digitalLead: "Digital Solution Lead",
+        lawFirm: "Law Firm of Lara Ferrari · Modena",
+        sunoikeoLead: "Implementing and optimising IT and technology solutions; developing and managing the company website.",
+        lawFirmLead: "Implementing and optimising technical solutions; developing and managing the law firm website.",
+        coordinator: "Project and Tender Coordinator",
+        coordinatorCopy: "Prepared materials for public and private tenders and coordinated the design and adaptive reuse of complex buildings.",
+        extremePlace: "Bologna · Jan 2026",
+        innovationPlace: "Cervia · May 2023",
+        innovationShort: "Innovation & sustainability",
+        projectDirect: "Official page",
+        pageTitle: "Matteo Lugli",
+        metaDescription: "Matteo Lugli is a mathematician working across data science, computer graphics and digital solutions.",
+        ogDescription: "Matteo Lugli. Mathematics, data science and computer graphics.",
         navAria: "Main navigation",
         socialAria: "Social profiles",
         educationAria: "Education timeline",
@@ -796,25 +662,24 @@
         equipmentAria: "DJ equipment",
         equipmentPhotoAlt: "Matteo Lugli performing with Denon DJ equipment",
         languageAria: "Language",
-        profileAlt: "kalkyril's avatar",
+        profileAlt: "Portrait of Matteo Lugli",
         coverAlt: "Cover art for {title}",
         navHome: "Home",
         navAbout: "About",
         navMusic: "Music",
         navCode: "Code",
-        heroCopy: "Math, code and music.",
         aboutTitle: "About",
-        aboutIntro: "I hold an MSc cum laude in <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Mathematics (Data Science program)</a> from the University of Modena and Reggio Emilia. I have rigorous foundations in differential geometry, numerical methods and statistics, which I apply to Computer Graphics, Vision and Machine Learning in Python, C and (occasionally) C++. I am looking for a role in graphics, 3D geometry or applied Machine Learning, where mathematical depth becomes working software. I have a strong interest in generative AI and creative computation, as well as cinema, music production and video editing.",
+        aboutIntro: "Mathematician with a Master’s degree in Mathematics (Data Science), awarded with honors, and training in Computer Graphics, differential geometry, numerical methods, and machine learning. Combines a quantitative background with experience in digital development, technical analysis, and project coordination.",
         educationLabel: "Education",
-        mscTitle: "MSc cum laude in Mathematics (Data Science) [LM40]",
-        bscTitle: "BSc in Mathematics [L35]",
+        mscTitle: "Master’s degree with honors in Mathematics (Data Science) [LM40]",
+        bscTitle: "Bachelor’s degree in Mathematics [L35]",
         university: "University of Modena and Reggio Emilia",
         mscThesis: "Read my MSc thesis",
         bscThesis: "Read my BSc thesis",
         mscDate: "Sep 2026",
         bscDate: "Apr 2024",
-        mscThesisInfo: "Thesis: <em>On smooth atlases over triangle meshes</em> · Supervisors: Prof. Pellacini and Prof. Mancinelli",
-        bscThesisInfo: "Thesis: <em>Sulla disuguaglianza isoperimetrica</em> · Supervisor: Prof. Carlo Mercuri",
+        mscThesisInfo: "<span class=\"thesis-line\">Thesis: <em>On smooth atlases over triangle meshes</em></span><span class=\"supervisor-line\">Supervisors: Prof. Fabio Pellacini and Prof. Claudio Mancinelli</span>",
+        bscThesisInfo: "<span class=\"thesis-line\">Thesis: <em>Sulla disuguaglianza isoperimetrica</em></span><span class=\"supervisor-line\">Supervisor: Prof. Carlo Mercuri</span>",
         projectsLabel: "Projects",
         projectsAria: "Projects",
         projectPlace: "Bologna (BO), Italy",
@@ -838,9 +703,32 @@
         scrollCue: "Scroll"
       },
       it: {
-        pageTitle: "Matteo Lugli / kalkyril",
-        metaDescription: "kalkyril è Matteo Lugli: matematico, programmatore e produttore musicale. Matematica, ricerca e musica in un unico luogo.",
-        ogDescription: "Matteo Lugli. Matematica, programmazione e musica.",
+        footerNavAria: "Navigazione del piè di pagina",
+        innovationTitle: "Innovazione e sostenibilità per la rigenerazione inclusiva della costa romagnola",
+        extremeTitle: "EXTREME — Eventi estremi e Infrastrutture Critiche",
+        coordinatorTask2: "Coordinamento delle attività di progettazione e sviluppo per la rifunzionalizzazione di edifici complessi per committenti privati",
+        coordinatorTask1: "Partecipazione a gare d’appalto e bandi, con redazione di materiale di supporto per iniziative complesse rivolte a pubbliche amministrazioni e soggetti privati",
+        lawFirmTask2: "Sviluppo e gestione del sito web (in corso)",
+        lawFirmTask1: "Ideazione, implementazione e ottimizzazione di soluzioni informatiche e tecniche per lo studio legale",
+        sunoikeoTask2: "Sviluppo e gestione del sito web (in corso)",
+        sunoikeoTask1: "Ideazione, implementazione e ottimizzazione di soluzioni informatiche e tecnologiche",
+        experienceLabel: "Esperienza",
+        experienceAria: "Esperienza professionale",
+        currentDate: "2026 —",
+        pastDate: "2021 — 2026",
+        digitalLead: "Digital Solution Leader",
+        lawFirm: "Studio Legale Avv. Lara Ferrari · Modena",
+        sunoikeoLead: "Ideazione, implementazione e ottimizzazione di soluzioni informatiche; sviluppo e gestione del sito web aziendale.",
+        lawFirmLead: "Ideazione, implementazione e ottimizzazione di soluzioni tecniche; sviluppo e gestione del sito web dello studio.",
+        coordinator: "Coordinatore di progetti e gare d’appalto",
+        coordinatorCopy: "Preparazione di materiali per gare e bandi pubblici e privati; coordinamento della progettazione e rifunzionalizzazione di edifici complessi.",
+        extremePlace: "Bologna · Gen 2026",
+        innovationPlace: "Cervia · Mag 2023",
+        innovationShort: "Innovazione e sostenibilità",
+        projectDirect: "Pagina ufficiale",
+        pageTitle: "Matteo Lugli",
+        metaDescription: "Matteo Lugli è un matematico che si occupa di data science, computer graphics e soluzioni digitali.",
+        ogDescription: "Matteo Lugli. Matematica, data science e computer graphics.",
         navAria: "Navigazione principale",
         socialAria: "Profili social",
         educationAria: "Percorso di studi",
@@ -849,15 +737,14 @@
         equipmentAria: "Attrezzatura da DJ",
         equipmentPhotoAlt: "Matteo Lugli durante un set con attrezzatura Denon DJ",
         languageAria: "Lingua",
-        profileAlt: "Avatar di kalkyril",
+        profileAlt: "Portrait of Matteo Lugli",
         coverAlt: "Copertina di {title}",
         navHome: "Home",
         navAbout: "Chi sono",
         navMusic: "Musica",
         navCode: "Codice",
-        heroCopy: "Matematica, codice e musica.",
         aboutTitle: "Chi sono",
-        aboutIntro: "Ho conseguito la laurea magistrale con lode in <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Matematica (curriculum Data Science)</a> presso l’Università di Modena e Reggio Emilia. Ho solide basi in geometria differenziale, metodi numerici e statistica, che applico alla Computer Grafica, alla Visione artificiale e al Machine Learning in Python, C e (occasionalmente) C++. Cerco un ruolo nella grafica, nella geometria 3D o nel Machine Learning applicato, dove la profondità matematica diventa software funzionante. Mi appassionano l’AI generativa e la computazione creativa, oltre a cinema, produzione musicale e montaggio video.",
+        aboutIntro: "Matematico con laurea magistrale con lode in Matematica (Data Science), con formazione in Computer Graphics, geometria differenziale, metodi numerici e apprendimento automatico. Alla preparazione quantitativa affianca esperienza nello sviluppo digitale, nell’analisi tecnica e nel coordinamento di progetti.",
         educationLabel: "Formazione",
         mscTitle: "Laurea magistrale con lode in Matematica (Data Science) [LM40]",
         bscTitle: "Laurea triennale in Matematica [L35]",
@@ -866,8 +753,8 @@
         bscThesis: "Leggi la mia tesi triennale",
         mscDate: "Set 2026",
         bscDate: "Apr 2024",
-        mscThesisInfo: "Tesi: <em>On smooth atlases over triangle meshes</em> · Relatori: Prof. Pellacini e Prof. Mancinelli",
-        bscThesisInfo: "Tesi: <em>Sulla disuguaglianza isoperimetrica</em> · Relatore: Prof. Carlo Mercuri",
+        mscThesisInfo: "<span class=\"thesis-line\">Tesi: <em>On smooth atlases over triangle meshes</em></span><span class=\"supervisor-line\">Relatori: Prof. Fabio Pellacini e Prof. Claudio Mancinelli</span>",
+        bscThesisInfo: "<span class=\"thesis-line\">Tesi: <em>Sulla disuguaglianza isoperimetrica</em></span><span class=\"supervisor-line\">Relatore: Prof. Carlo Mercuri</span>",
         projectsLabel: "Progetti",
         projectsAria: "Progetti",
         projectPlace: "Bologna (BO), Italia",
@@ -891,9 +778,32 @@
         scrollCue: "Scorri"
       },
       fr: {
-        pageTitle: "Matteo Lugli / kalkyril",
-        metaDescription: "kalkyril, c’est Matteo Lugli : mathématicien, programmeur et producteur de musique. Mathématiques, recherche et musique au même endroit.",
-        ogDescription: "Matteo Lugli. Mathématiques, programmation et musique.",
+        footerNavAria: "Navigation de pied de page",
+        innovationTitle: "Innovation et durabilité pour la régénération inclusive de la côte romagnole",
+        extremeTitle: "EXTREME — Événements extrêmes et infrastructures critiques",
+        coordinatorTask2: "Coordination de la conception et du développement pour la reconversion de bâtiments complexes destinés à des clients privés",
+        coordinatorTask1: "Participation aux appels d’offres et préparation de dossiers pour des initiatives complexes des secteurs public et privé",
+        lawFirmTask2: "Développement et gestion du site web (en cours)",
+        lawFirmTask1: "Mise en place et optimisation de solutions informatiques et techniques pour le cabinet",
+        sunoikeoTask2: "Développement et gestion du site web (en cours)",
+        sunoikeoTask1: "Mise en place et optimisation de solutions informatiques et technologiques pour l’entreprise",
+        experienceLabel: "Expérience",
+        experienceAria: "Expérience professionnelle",
+        currentDate: "2026 —",
+        pastDate: "2021 — 2026",
+        digitalLead: "Responsable des solutions numériques",
+        lawFirm: "Cabinet d’avocats Lara Ferrari · Modène",
+        sunoikeoLead: "Mise en place et optimisation de solutions informatiques; développement et gestion du site web de l’entreprise.",
+        lawFirmLead: "Mise en place et optimisation de solutions techniques; développement et gestion du site web du cabinet.",
+        coordinator: "Coordinateur de projets et d’appels d’offres",
+        coordinatorCopy: "Préparation de dossiers pour des appels d’offres publics et privés; coordination de projets de reconversion de bâtiments complexes.",
+        extremePlace: "Bologne · Janv. 2026",
+        innovationPlace: "Cervia · Mai 2023",
+        innovationShort: "Innovation et durabilité",
+        projectDirect: "Page officielle",
+        pageTitle: "Matteo Lugli",
+        metaDescription: "Matteo Lugli est mathématicien, spécialisé en data science, informatique graphique et solutions numériques.",
+        ogDescription: "Matteo Lugli. Mathématiques, data science et informatique graphique.",
         navAria: "Navigation principale",
         socialAria: "Profils sociaux",
         educationAria: "Parcours universitaire",
@@ -902,15 +812,14 @@
         equipmentAria: "Équipement de DJ",
         equipmentPhotoAlt: "Matteo Lugli pendant un set avec du matériel Denon DJ",
         languageAria: "Langue",
-        profileAlt: "Avatar de kalkyril",
+        profileAlt: "Portrait of Matteo Lugli",
         coverAlt: "Pochette de {title}",
         navHome: "Accueil",
         navAbout: "À propos",
         navMusic: "Musique",
         navCode: "Code",
-        heroCopy: "Maths, code et musique.",
         aboutTitle: "À propos",
-        aboutIntro: "Je suis titulaire d’un master avec mention en <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Mathématiques (curriculum Data Science)</a> de l’Université de Modène et Reggio d’Émilie. J’ai des bases rigoureuses en géométrie différentielle, méthodes numériques et statistiques, que j’applique à l’informatique graphique, à la vision par ordinateur et au Machine Learning en Python, C et (parfois) C++. Je recherche un poste en informatique graphique, géométrie 3D ou Machine Learning appliqué, là où la profondeur mathématique devient un logiciel concret. Je m’intéresse beaucoup à l’IA générative et à la création computationnelle, ainsi qu’au cinéma, à la production musicale et au montage vidéo.",
+        aboutIntro: "Mathématicien titulaire d’un master en mathématiques (Data Science) obtenu avec mention, formé en informatique graphique, géométrie différentielle, méthodes numériques et apprentissage automatique. Associe une formation quantitative à une expérience en développement numérique, analyse technique et coordination de projets.",
         educationLabel: "Formation",
         mscTitle: "Master avec mention en mathématiques (Data Science) [LM40]",
         bscTitle: "Licence de mathématiques [L35]",
@@ -919,8 +828,8 @@
         bscThesis: "Lire mon mémoire de licence",
         mscDate: "Sept. 2026",
         bscDate: "Avr. 2024",
-        mscThesisInfo: "Mémoire : <em>On smooth atlases over triangle meshes</em> · Directeurs : Prof. Pellacini et Prof. Mancinelli",
-        bscThesisInfo: "Mémoire : <em>Sulla disuguaglianza isoperimetrica</em> · Directeur : Prof. Carlo Mercuri",
+        mscThesisInfo: "<span class=\"thesis-line\">Mémoire : <em>On smooth atlases over triangle meshes</em></span><span class=\"supervisor-line\">Directeurs : Prof. Fabio Pellacini et Prof. Claudio Mancinelli</span>",
+        bscThesisInfo: "<span class=\"thesis-line\">Mémoire : <em>Sulla disuguaglianza isoperimetrica</em></span><span class=\"supervisor-line\">Directeur : Prof. Carlo Mercuri</span>",
         projectsLabel: "Projets",
         projectsAria: "Projets",
         projectPlace: "Bologne (BO), Italie",
@@ -944,9 +853,32 @@
         scrollCue: "Défiler"
       },
       es: {
-        pageTitle: "Matteo Lugli / kalkyril",
-        metaDescription: "kalkyril es Matteo Lugli: matemático, programador y productor musical. Matemáticas, investigación y música en un mismo lugar.",
-        ogDescription: "Matteo Lugli. Matemáticas, programación y música.",
+        footerNavAria: "Navegación del pie de página",
+        innovationTitle: "Innovación y sostenibilidad para la regeneración inclusiva de la costa de Romaña",
+        extremeTitle: "EXTREME — Eventos extremos e infraestructuras críticas",
+        coordinatorTask2: "Coordinación del diseño y desarrollo para la rehabilitación de edificios complejos destinados a clientes privados",
+        coordinatorTask1: "Participación en licitaciones y convocatorias, preparando materiales para iniciativas complejas de los sectores público y privado",
+        lawFirmTask2: "Desarrollo y gestión del sitio web (en curso)",
+        lawFirmTask1: "Implementación y optimización de soluciones informáticas y técnicas para el despacho",
+        sunoikeoTask2: "Desarrollo y gestión del sitio web (en curso)",
+        sunoikeoTask1: "Implementación y optimización de soluciones informáticas y tecnológicas para la empresa",
+        experienceLabel: "Experiencia",
+        experienceAria: "Experiencia profesional",
+        currentDate: "2026 —",
+        pastDate: "2021 — 2026",
+        digitalLead: "Responsable de soluciones digitales",
+        lawFirm: "Despacho de Lara Ferrari · Módena",
+        sunoikeoLead: "Implementación y optimización de soluciones informáticas; desarrollo y gestión del sitio web de la empresa.",
+        lawFirmLead: "Implementación y optimización de soluciones técnicas; desarrollo y gestión del sitio web del despacho.",
+        coordinator: "Coordinador de proyectos y licitaciones",
+        coordinatorCopy: "Preparación de documentación para licitaciones públicas y privadas; coordinación de proyectos de rehabilitación de edificios complejos.",
+        extremePlace: "Bolonia · Ene. 2026",
+        innovationPlace: "Cervia · Mayo 2023",
+        innovationShort: "Innovación y sostenibilidad",
+        projectDirect: "Página oficial",
+        pageTitle: "Matteo Lugli",
+        metaDescription: "Matteo Lugli es matemático y trabaja en ciencia de datos, gráficos por ordenador y soluciones digitales.",
+        ogDescription: "Matteo Lugli. Matemáticas, ciencia de datos y gráficos por ordenador.",
         navAria: "Navegación principal",
         socialAria: "Perfiles sociales",
         educationAria: "Trayectoria académica",
@@ -955,15 +887,14 @@
         equipmentAria: "Equipo de DJ",
         equipmentPhotoAlt: "Matteo Lugli durante una sesión con equipo Denon DJ",
         languageAria: "Idioma",
-        profileAlt: "Avatar de kalkyril",
+        profileAlt: "Portrait of Matteo Lugli",
         coverAlt: "Portada de {title}",
         navHome: "Inicio",
         navAbout: "Sobre mí",
         navMusic: "Música",
         navCode: "Código",
-        heroCopy: "Matemáticas, código y música.",
         aboutTitle: "Sobre mí",
-        aboutIntro: "Tengo un máster con honores en <a href=\"https://www.fim.unimore.it/it/didattica/corsi-di-laurea-magistrale-informazioni-generali/matematica/data-science\">Matemáticas (currículum Data Science)</a> por la Universidad de Módena y Reggio Emilia. Cuento con una base rigurosa en geometría diferencial, métodos numéricos y estadística, que aplico a la Computer Graphics, la visión artificial y el Machine Learning en Python, C y (ocasionalmente) C++. Busco un puesto en gráficos, geometría 3D o Machine Learning aplicado, donde la profundidad matemática se convierte en software funcional. Me interesan mucho la IA generativa y la computación creativa, además del cine, la producción musical y la edición de vídeo.",
+        aboutIntro: "Matemático con un máster en Matemáticas (Data Science) obtenido con honores y formación en gráficos por ordenador, geometría diferencial, métodos numéricos y aprendizaje automático. Combina una base cuantitativa con experiencia en desarrollo digital, análisis técnico y coordinación de proyectos.",
         educationLabel: "Formación",
         mscTitle: "Máster con honores en Matemáticas (Data Science) [LM40]",
         bscTitle: "Grado en Matemáticas [L35]",
@@ -972,8 +903,8 @@
         bscThesis: "Leer mi tesis de grado",
         mscDate: "Sept. 2026",
         bscDate: "Abr. 2024",
-        mscThesisInfo: "Tesis: <em>On smooth atlases over triangle meshes</em> · Directores: Prof. Pellacini y Prof. Mancinelli",
-        bscThesisInfo: "Tesis: <em>Sulla disuguaglianza isoperimetrica</em> · Director: Prof. Carlo Mercuri",
+        mscThesisInfo: "<span class=\"thesis-line\">Tesis: <em>On smooth atlases over triangle meshes</em></span><span class=\"supervisor-line\">Directores: Prof. Fabio Pellacini y Prof. Claudio Mancinelli</span>",
+        bscThesisInfo: "<span class=\"thesis-line\">Tesis: <em>Sulla disuguaglianza isoperimetrica</em></span><span class=\"supervisor-line\">Director: Prof. Carlo Mercuri</span>",
         projectsLabel: "Proyectos",
         projectsAria: "Proyectos",
         projectPlace: "Bolonia (BO), Italia",
@@ -998,24 +929,12 @@
       }
     };
 
-    const SETS = [
-      { id: "OJu5Rr9aEAg", title: "Mercoledì Fresco", duration: "56:46", date: "2025-05-07" },
-      { id: "meG5AgiUgrg", title: "Martedì Techno II", duration: "44:38", date: "2025-03-03" },
-      { id: "RXVCxOt1lBk", title: "TFunhouse 3.0", duration: "08:21", date: "2024-11-07" },
-      { id: "1I_Ve5rtMFQ", title: "Martedì Techno I", duration: "43:18", date: "2024-03-08" },
-      { id: "89XFuPnB4gI", title: "Domenica Teknica", duration: "35:29", date: "2023-09-29" }
-    ];
-
     const supportedLanguages = Object.keys(TRANSLATIONS);
     let activeLanguage = "en";
     try {
       const savedLanguage = localStorage.getItem("kalkyril-language");
       if (supportedLanguages.includes(savedLanguage)) activeLanguage = savedLanguage;
     } catch (error) {}
-
-    // Accessible list of the sets (screen readers, keyboard, and the no-WebGL fallback grid).
-    document.querySelector("#sets .cgallery-list").innerHTML = SETS.map((set) => `
-      <li><a href="https://www.youtube.com/watch?v=${set.id}"><span class="cgallery-list-title">${set.title}</span></a></li>`).join("");
 
     const heroUi = document.querySelector(".hero-ui");
     const heroUiInverse = heroUi.cloneNode(true);
@@ -1051,19 +970,11 @@
       document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
         element.setAttribute("aria-label", copy[element.dataset.i18nAria]);
       });
-      document.querySelector(".releases").setAttribute("aria-label", copy.releasesAria);
-      document.querySelector(".release-card").setAttribute("aria-label", copy.releaseOpenAria);
-      document.querySelector(".release-cover").alt = copy.releaseCoverAlt;
-      document.querySelector("[data-official-video]").setAttribute("aria-label", copy.officialVideoAria);
-      document.querySelector("#sets").setAttribute("aria-label", copy.setsAria);
-      document.querySelector(".equipment-board").setAttribute("aria-label", copy.equipmentAria);
-      document.querySelector(".equipment-photo").alt = copy.equipmentPhotoAlt;
       document.querySelector(".language-switcher").setAttribute("aria-label", copy.languageAria);
       document.querySelector(".profile").alt = copy.profileAlt;
-      document.querySelectorAll("#sets .cgallery-list a").forEach((link, index) => {
-        link.setAttribute("aria-label", `${SETS[index].title} — ${copy.liveSet} (${SETS[index].duration})`);
-        const img = link.querySelector("img");
-        if (img) img.alt = copy.coverAlt.replace("{title}", SETS[index].title);
+      document.querySelectorAll(".stack-card").forEach((card) => {
+        const title = card.dataset.project === "extreme" ? copy.extremeTitle : copy.innovationTitle;
+        card.querySelector(".stack-card-direct").setAttribute("aria-label", `${copy.projectDirect}: ${title}`);
       });
       document.querySelectorAll("[data-lang]").forEach((button) => {
         button.setAttribute("aria-pressed", String(button.dataset.lang === activeLanguage));
@@ -1083,29 +994,6 @@
     });
     applyLanguage(activeLanguage);
 
-    const releaseCard = document.querySelector(".release-card");
-    const releasePanel = document.querySelector("#release-panel");
-    releaseCard.after(releasePanel);
-
-    function setReleasePanel(open) {
-      releasePanel.classList.toggle("is-open", open);
-      releasePanel.setAttribute("aria-hidden", String(!open));
-      releaseCard.setAttribute("aria-expanded", String(open));
-      if (open && mobileViewport.matches) {
-        requestAnimationFrame(() => releasePanel.scrollIntoView({ behavior: "smooth", block: "nearest" }));
-      }
-    }
-    releaseCard.addEventListener("click", () => setReleasePanel(!releasePanel.classList.contains("is-open")));
-    document.addEventListener("pointerdown", (event) => {
-      if (releasePanel.classList.contains("is-open") && !event.target.closest(".releases")) setReleasePanel(false);
-    });
-    addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && releasePanel.classList.contains("is-open")) {
-        setReleasePanel(false);
-        releaseCard.focus({ preventScroll: true });
-      }
-    });
-
     if ("IntersectionObserver" in window && !reducedMotion.matches) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => entry.target.classList.toggle("visible", entry.isIntersecting));
@@ -1115,12 +1003,12 @@
       document.querySelectorAll(".reveal").forEach((element) => element.classList.add("visible"));
     }
 
-    /* ───────── Projects: interactive card stack ───────── */
+    /* Projects: the first card starts on top; a click or a drag cycles it behind the next. */
     document.querySelectorAll("[data-card-stack]").forEach((stack) => {
       const sensitivity = 110;
       const elastic = .6;
       const randomTilt = () => Math.random() * 8 - 4;
-      let order = [...stack.querySelectorAll(".stack-card")]; // last item is the top card
+      let order = [...stack.querySelectorAll(".stack-card")].reverse();
       const tilt = new Map(order.map((card) => [card, randomTilt()]));
 
       function layout() {
@@ -1148,9 +1036,9 @@
 
       let drag = null;
       stack.addEventListener("pointerdown", (event) => {
-        const card = event.target.closest(".stack-card.is-top");
-        if (!card || event.button > 0) return;
-        drag = { card, id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+        const button = event.target.closest(".stack-card.is-top .stack-card-open");
+        if (!button || event.button > 0) return;
+        drag = { card: button.closest(".stack-card"), id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
       });
       stack.addEventListener("pointermove", (event) => {
         if (!drag || event.pointerId !== drag.id) return;
@@ -1165,8 +1053,8 @@
         const dx = ox * elastic, dy = oy * elastic;
         drag.card.style.setProperty("--dx", `${dx}px`);
         drag.card.style.setProperty("--dy", `${dy}px`);
-        drag.card.style.setProperty("--rx", `${clamp(-dy * .3, -30, 30)}deg`);
-        drag.card.style.setProperty("--ry", `${clamp(dx * .3, -30, 30)}deg`);
+        drag.card.style.setProperty("--rx", `${Math.max(-30, Math.min(30, -dy * .3))}deg`);
+        drag.card.style.setProperty("--ry", `${Math.max(-30, Math.min(30, dx * .3))}deg`);
       });
       function endDrag(event, cancelled) {
         if (!drag || event.pointerId !== drag.id) return;
@@ -1182,34 +1070,22 @@
       }
       stack.addEventListener("pointerup", (event) => endDrag(event, false));
       stack.addEventListener("pointercancel", (event) => endDrag(event, true));
-
-      // A click (not a drag) on the card surface sends it to the back; clicks on its links still navigate.
       stack.addEventListener("click", (event) => {
         const card = event.target.closest(".stack-card.is-top");
         if (!card) return;
         if (card.dataset.justDragged) { event.preventDefault(); return; }
-        if (!event.target.closest("a")) sendToBack();
+        if (!event.target.closest(".stack-card-open")) return;
+        sendToBack();
+        if (event.detail === 0) order.at(-1).querySelector(".stack-card-open").focus();
       });
-      stack.closest(".projects").querySelector(".stack-shuffle").addEventListener("click", sendToBack);
       layout();
     });
 
-    /* ───────── Chapter colour mode + floating nav ───────── */
+    /* Floating navigation on the main page */
     const hero = document.querySelector("#hero");
-    const aboutSection = document.querySelector("#about");
-    const musicSection = document.querySelector("#music");
     const siteNav = document.querySelector(".site-nav");
-    const navAbout = siteNav.querySelector('a[href="#about"]');
-    const navMusic = siteNav.querySelector('a[href="#music"]');
-    const themeColor = document.querySelector('meta[name="theme-color"]');
     let modeTicking = false;
     function updateMode() {
-      const musicIsActive = musicSection.getBoundingClientRect().top <= innerHeight * .55;
-      const aboutIsActive = !musicIsActive && aboutSection.getBoundingClientRect().top <= innerHeight * .55;
-      document.body.classList.toggle("music-mode", musicIsActive);
-      navAbout.classList.toggle("is-current", aboutIsActive);
-      navMusic.classList.toggle("is-current", musicIsActive);
-      themeColor.content = musicIsActive ? "#09090b" : "#fdfdfd";
       const navVisible = scrollY > hero.offsetHeight * .8;
       siteNav.classList.toggle("scrolled", navVisible);
       siteNav.inert = !navVisible;
@@ -1226,12 +1102,6 @@
     addEventListener("resize", requestModeUpdate);
     addEventListener("pageshow", requestModeUpdate);
     requestModeUpdate();
-
-    const spotlight = document.querySelector(".spotlight");
-    addEventListener("pointermove", (event) => {
-      spotlight.style.setProperty("--mx", `${event.clientX}px`);
-      spotlight.style.setProperty("--my", `${event.clientY}px`);
-    }, { passive: true });
 
     /* ───────── HERO: blob reveal, trails, waves, parallax, text inversion ───────── */
     (() => {
@@ -1495,7 +1365,6 @@
       const halo = svg.querySelector(".journey-tip-halo");
       const cue = document.querySelector(".scroll-cue .cue-line");
       const anchors = [...journey.querySelectorAll("h2, .content-label")];
-      const aboutEnd = aboutSection.querySelector(".wrap").lastElementChild;
 
       let total = 0, samples = [], nodes = [], drawn = 0, target = 0, ticking = false, animating = false;
 
@@ -1511,20 +1380,12 @@
 
         const points = [{ x: cueX, y: 0 }];
         const nodeData = [];
-        const aboutBottom = local(aboutSection.getBoundingClientRect()).bottom;
-        const musicHead = local(musicSection.querySelector("h2").getBoundingClientRect());
-        const timelineBottom = local(aboutEnd.getBoundingClientRect()).bottom;
 
         anchors.forEach((anchor, index) => {
           const r = local(anchor.getBoundingClientRect());
           const isMajor = anchor.tagName === "H2";
           const y = isMajor ? r.top + Math.min(28, (r.bottom - r.top) / 2) : r.mid;
-          if (anchor === musicSection.querySelector("h2")) {
-            // The chapter change: a wide swoosh through the empty band between sections.
-            points.push({ x: gx, y: timelineBottom + 20 });
-            points.push({ x: Math.min(width * .72, width - 40), y: aboutBottom });
-            points.push({ x: gx, y: musicHead.top - 30 });
-          } else if (points.length > 1) {
+          if (points.length > 1) {
             const prev = points[points.length - 1];
             points.push({ x: gx + (index % 2 ? sway : -sway), y: (prev.y + y) / 2 });
           }
@@ -1634,302 +1495,6 @@
     })();
 
     requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add("loaded")));
-  </script>
-  <script type="module">
-    /* ───────── Live sets: circular gallery (OGL / WebGL) ─────────
-       Planes laid on a horizontal track, bent onto a circle, with inertial drag, snap and infinite wrap. */
-    const root = document.querySelector("#sets");
-    const stage = root.querySelector(".cgallery-stage");
-    const indexLabel = root.querySelector(".cgallery-index");
-    const metaLabel = root.querySelector(".cgallery-meta");
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const sets = SETS;
-    const pad = (n) => String(n).padStart(2, "0");
-
-    function fallback() {
-      root.classList.add("is-fallback");
-      root.querySelectorAll(".cgallery-list a").forEach((link, i) => {
-        link.insertAdjacentHTML("afterbegin", `<img src="https://i.ytimg.com/vi/${sets[i].id}/mqdefault.jpg" alt="" loading="lazy" width="320" height="180">`);
-      });
-    }
-
-    let OGL;
-    if (matchMedia("(max-width: 760px)").matches) {
-      fallback();
-    } else {
-      try {
-        OGL = await import("https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm");
-      } catch (error) { fallback(); }
-    }
-
-    if (OGL) {
-      const { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } = OGL;
-      let renderer;
-      try { renderer = new Renderer({ alpha: true, antialias: true, dpr: Math.min(devicePixelRatio || 1, 2) }); } catch (error) {}
-      if (!renderer || !renderer.gl) fallback();
-      else start(renderer);
-    }
-
-    async function start(renderer) {
-      const { Camera, Mesh, Plane, Program, Texture, Transform } = OGL;
-      const gl = renderer.gl;
-      gl.clearColor(0, 0, 0, 0);
-      stage.append(gl.canvas);
-      const camera = new Camera(gl, { fov: 45 });
-      camera.position.z = 20;
-      const scene = new Transform();
-      const geometry = new Plane(gl, { heightSegments: 40, widthSegments: 80 });
-      try { await document.fonts.load('600 64px "Space Grotesk"'); } catch (error) {}
-
-      const vertex = `
-        precision highp float;
-        attribute vec3 position;
-        attribute vec2 uv;
-        uniform mat4 modelViewMatrix;
-        uniform mat4 projectionMatrix;
-        uniform float uTime;
-        uniform float uSpeed;
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          vec3 p = position;
-          p.z = (sin(p.x * 4.0 + uTime) * 1.5 + cos(p.y * 2.0 + uTime) * 1.5) * (0.1 + uSpeed * 0.5);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
-        }`;
-      const fragment = `
-        precision highp float;
-        uniform vec2 uImageSizes;
-        uniform vec2 uPlaneSizes;
-        uniform sampler2D tMap;
-        uniform float uBorderRadius;
-        uniform float uAlpha;
-        uniform float uEdge;
-        varying vec2 vUv;
-        float roundedBox(vec2 p, vec2 b, float r) {
-          vec2 d = abs(p) - b;
-          return length(max(d, vec2(0.0))) + min(max(d.x, d.y), 0.0) - r;
-        }
-        void main() {
-          vec2 ratio = vec2(
-            min((uPlaneSizes.x / uPlaneSizes.y) / (uImageSizes.x / uImageSizes.y), 1.0),
-            min((uPlaneSizes.y / uPlaneSizes.x) / (uImageSizes.y / uImageSizes.x), 1.0)
-          );
-          vec2 uv = vec2(vUv.x * ratio.x + (1.0 - ratio.x) * 0.5, vUv.y * ratio.y + (1.0 - ratio.y) * 0.5);
-          vec4 color = texture2D(tMap, uv);
-          float aspect = uPlaneSizes.x / uPlaneSizes.y;
-          vec2 p = (vUv - 0.5) * vec2(aspect, 1.0);
-          float d = roundedBox(p, vec2(0.5 * aspect, 0.5) - uBorderRadius, uBorderRadius);
-          float edge = uEdge;
-          float alpha = 1.0 - smoothstep(-edge, edge, d);
-          gl_FragColor = vec4(color.rgb, alpha * uAlpha);
-        }`;
-
-      const textTexture = (text) => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        const font = '600 64px "Space Grotesk", sans-serif';
-        ctx.font = font;
-        const w = Math.ceil(ctx.measureText(text).width) + 40;
-        const h = 96;
-        canvas.width = w; canvas.height = h;
-        ctx.font = font;
-        ctx.fillStyle = "#f4f4f6";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(text, w / 2, h / 2);
-        const texture = new Texture(gl, { generateMipmaps: false });
-        texture.image = canvas;
-        return { texture, aspect: w / h };
-      };
-      const titleProgram = (texture) => new Program(gl, {
-        vertex: `attribute vec3 position; attribute vec2 uv; uniform mat4 modelViewMatrix; uniform mat4 projectionMatrix; varying vec2 vUv;
-          void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
-        fragment: `precision highp float; uniform sampler2D tMap; uniform float uAlpha; varying vec2 vUv;
-          void main() { vec4 c = texture2D(tMap, vUv); if (c.a < 0.05) discard; gl_FragColor = vec4(c.rgb, c.a * uAlpha); }`,
-        uniforms: { tMap: { value: texture }, uAlpha: { value: 0 } },
-        transparent: true, depthTest: false, depthWrite: false
-      });
-
-      const loop = [...sets, ...sets];
-      const medias = loop.map((set, index) => {
-        const texture = new Texture(gl, { generateMipmaps: true });
-        const program = new Program(gl, {
-          vertex, fragment, depthTest: false, depthWrite: false, transparent: true,
-          uniforms: {
-            tMap: { value: texture }, uPlaneSizes: { value: [16, 9] }, uImageSizes: { value: [16, 9] },
-            uSpeed: { value: 0 }, uTime: { value: 100 * Math.random() }, uBorderRadius: { value: .045 }, uAlpha: { value: 0 }, uEdge: { value: .004 }
-          }
-        });
-        const media = { set, index, program, extra: 0, alpha: 0, loaded: false };
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.decoding = "async";
-        img.onload = () => {
-          texture.image = img;
-          program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
-          media.loaded = true;
-        };
-        img.onerror = () => { if (!img.dataset.retry) { img.dataset.retry = "1"; img.src = `https://i.ytimg.com/vi/${set.id}/hqdefault.jpg`; } };
-        img.src = `https://i.ytimg.com/vi/${set.id}/maxresdefault.jpg`;
-        media.plane = new Mesh(gl, { geometry, program });
-        media.plane.setParent(scene);
-        const { texture: tt, aspect } = textTexture(set.title);
-        media.titleAspect = aspect;
-        media.title = new Mesh(gl, { geometry: new Plane(gl), program: titleProgram(tt) });
-        media.title.setParent(media.plane);
-        return media;
-      });
-
-      const scroll = { current: 0, target: 0, last: 0, ease: reduced ? 1 : .07 };
-      let screen = { w: 1, h: 1 }, viewport = { w: 1, h: 1 }, itemWidth = 1, bend = 3;
-      let activeIndex = -1;
-
-      function resize() {
-        const keep = itemWidth > 1 ? scroll.target / itemWidth : 0;
-        screen = { w: stage.clientWidth || 1, h: stage.clientHeight || 1 };
-        renderer.setSize(screen.w, screen.h);
-        camera.perspective({ aspect: screen.w / screen.h });
-        const vh = 2 * Math.tan((camera.fov * Math.PI / 180) / 2) * camera.position.z;
-        viewport = { w: vh * camera.aspect, h: vh };
-        const mobile = screen.w < 700;
-        bend = mobile ? 1.6 : 3;
-        const planePxW = Math.min(screen.w * (mobile ? .74 : .4), screen.h * .6 * 16 / 9, 620);
-        const planePxH = planePxW * 9 / 16;
-        const gapPx = mobile ? 20 : 40;
-        const sx = viewport.w * planePxW / screen.w;
-        const sy = viewport.h * planePxH / screen.h;
-        itemWidth = sx + viewport.w * gapPx / screen.w;
-        medias.forEach((m) => {
-          m.plane.scale.set(sx, sy, 1);
-          m.program.uniforms.uPlaneSizes.value = [sx, sy];
-          m.x = itemWidth * m.index;
-          // Put the second half of the loop on the left so both sides are filled from the start.
-          m.extra = m.index >= medias.length / 2 + 1 ? itemWidth * medias.length : 0;
-          m.program.uniforms.uEdge.value = 1.2 / planePxH;
-          // Title below the cover (child of the plane, so in plane-local units)
-          const th = .12, tw = th * m.titleAspect * sy / sx;
-          m.title.scale.set(tw, th, 1);
-          m.title.position.y = -.5 - th * .5 - .05;
-        });
-        scene.position.y = viewport.h * .1;
-        scroll.current = scroll.target = scroll.last = Math.round(keep) * itemWidth;
-      }
-
-      function update(time) {
-        scroll.current += (scroll.target - scroll.current) * scroll.ease;
-        const direction = scroll.current > scroll.last ? "right" : "left";
-        const speed = scroll.current - scroll.last;
-        const widthTotal = itemWidth * medias.length;
-        const H = viewport.w / 2;
-        medias.forEach((m) => {
-          const plane = m.plane;
-          plane.position.x = m.x - scroll.current - m.extra;
-          const x = plane.position.x;
-          const R = (H * H + bend * bend) / (2 * bend);
-          const ex = Math.min(Math.abs(x), H);
-          const arc = R - Math.sqrt(R * R - ex * ex);
-          plane.position.y = -arc;
-          plane.rotation.z = -Math.sign(x) * Math.asin(ex / R);
-          const u = m.program.uniforms;
-          if (!reduced) u.uTime.value += .04;
-          u.uSpeed.value = reduced ? 0 : speed;
-          if (m.loaded) m.alpha += (1 - m.alpha) * .08;
-          u.uAlpha.value = m.alpha;
-          m.title.program.uniforms.uAlpha.value = m.alpha * .92;
-          const half = plane.scale.x / 2, edge = viewport.w / 2;
-          if (direction === "right" && x + half < -edge - itemWidth) m.extra -= widthTotal;
-          if (direction === "left" && x - half > edge + itemWidth) m.extra += widthTotal;
-        });
-        scroll.last = scroll.current;
-        renderer.render({ scene, camera });
-
-        const i = ((Math.round(scroll.target / itemWidth) % sets.length) + sets.length) % sets.length;
-        if (i !== activeIndex) {
-          activeIndex = i;
-          indexLabel.textContent = `${pad(i + 1)} / ${pad(sets.length)}`;
-          metaLabel.textContent = `${sets[i].title} · ${sets[i].duration} · ${sets[i].date.slice(0, 4)}`;
-        }
-      }
-
-      const snap = () => { scroll.target = Math.round(scroll.target / itemWidth) * itemWidth; };
-      const go = (dir) => { scroll.target = (Math.round(scroll.target / itemWidth) + dir) * itemWidth; };
-      root.querySelectorAll("[data-dir]").forEach((b) => b.addEventListener("click", () => go(Number(b.dataset.dir))));
-      stage.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowRight") { e.preventDefault(); go(1); }
-        if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
-        if (e.key === "Enter") location.href = `https://www.youtube.com/watch?v=${sets[activeIndex].id}`;
-      });
-
-      // Which cover is under the pointer (undo the plane's bend rotation, then test its box)
-      function hit(clientX, clientY) {
-        const r = stage.getBoundingClientRect();
-        const wx = ((clientX - r.left) / screen.w - .5) * viewport.w;
-        const wy = (.5 - (clientY - r.top) / screen.h) * viewport.h - scene.position.y;
-        for (const m of medias) {
-          const p = m.plane, c = Math.cos(-p.rotation.z), s = Math.sin(-p.rotation.z);
-          const dx = wx - p.position.x, dy = wy - p.position.y;
-          const lx = dx * c - dy * s, ly = dx * s + dy * c;
-          if (Math.abs(lx) <= p.scale.x / 2 && Math.abs(ly) <= p.scale.y / 2) return m;
-        }
-        return null;
-      }
-
-      let drag = null, snapTimer = 0;
-      stage.addEventListener("pointerdown", (e) => {
-        if (e.button > 0) return;
-        drag = { x: e.clientX, y: e.clientY, from: scroll.target, moved: false, id: e.pointerId };
-      });
-      stage.addEventListener("pointermove", (e) => {
-        if (!drag) {
-          if (e.pointerType === "mouse") stage.classList.toggle("is-over-card", !!hit(e.clientX, e.clientY));
-          return;
-        }
-        const dx = e.clientX - drag.x;
-        if (!drag.moved && Math.abs(dx) > 6) {
-          drag.moved = true;
-          stage.classList.add("is-dragging");
-          stage.setPointerCapture(e.pointerId);
-        }
-        if (drag.moved) scroll.target = drag.from - dx * (viewport.w / screen.w) * 1.15;
-      });
-      const end = (e, cancelled) => {
-        if (!drag) return;
-        const wasDrag = drag.moved;
-        stage.classList.remove("is-dragging");
-        drag = null;
-        if (wasDrag) { snap(); return; }
-        if (cancelled) return;
-        const m = hit(e.clientX, e.clientY);
-        if (!m) return;
-        const offset = Math.round((m.plane.position.x) / itemWidth);
-        if (offset === 0) location.href = `https://www.youtube.com/watch?v=${m.set.id}`;
-        else scroll.target += offset * itemWidth;
-      };
-      stage.addEventListener("pointerup", (e) => end(e, false));
-      stage.addEventListener("pointercancel", (e) => end(e, true));
-      stage.addEventListener("pointerleave", () => stage.classList.remove("is-over-card"));
-      // Horizontal wheel / trackpad swipe only: vertical wheel keeps scrolling the page.
-      stage.addEventListener("wheel", (e) => {
-        const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
-        if (!dx) return;
-        e.preventDefault();
-        scroll.target += dx * (viewport.w / screen.w);
-        clearTimeout(snapTimer);
-        snapTimer = setTimeout(snap, 160);
-      }, { passive: false });
-
-      new ResizeObserver(resize).observe(stage);
-      resize();
-
-      let running = false, raf = 0, visible = false;
-      const tick = (t) => { update(t); raf = requestAnimationFrame(tick); };
-      const run = () => { if (!running && visible && !document.hidden) { running = true; raf = requestAnimationFrame(tick); } };
-      const stop = () => { running = false; cancelAnimationFrame(raf); };
-      new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; visible ? run() : stop(); }).observe(stage);
-      document.addEventListener("visibilitychange", () => (document.hidden ? stop() : run()));
-      update(0);
-      root.classList.add("is-ready");
-    }
   </script>
 </body>
 </html>
