@@ -199,15 +199,16 @@
 
     /* Projects: clicking or dragging the top card brings the next one forward. */
     .projects { width: min(var(--content-width), calc(100% - 180px)); margin-left: 180px; padding-top: 26px; }
-    .card-stack { position: relative; width: 100%; height: clamp(350px, 56vw, 430px); perspective: 1000px; touch-action: pan-y; container-type: inline-size; }
+    .card-stack { position: relative; width: 100%; height: 340px; perspective: 1000px; touch-action: pan-y; container-type: inline-size; }
     .stack-card { --depth: 0; --rot: 0deg; --dx: 0px; --dy: 0px; --rx: 0deg; --ry: 0deg; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 8cqw 7.5cqw; overflow: hidden; border: 1px solid rgba(14,14,16,.08); border-radius: 30px; box-shadow: 0 30px 60px rgba(14,14,16,.1), 0 2px 6px rgba(14,14,16,.05); user-select: none; -webkit-user-select: none; transform-origin: 50% 60%; transform: translate3d(var(--dx), calc(var(--depth) * -14px + var(--dy)), 0) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--rot)) scale(calc(1 - var(--depth) * .05)); opacity: calc(1 - var(--depth) * .15); transition: transform .75s cubic-bezier(.3,1.45,.45,1), opacity .5s var(--ease), box-shadow .4s var(--ease); }
     .stack-card.is-dragging { transition: opacity .5s var(--ease), box-shadow .4s var(--ease); box-shadow: 0 40px 80px rgba(14,14,16,.16); }
     .stack-card-art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
     .stack-card-open { position: absolute; inset: 0; z-index: 1; width: 100%; border: 0; background: transparent; cursor: grab; touch-action: pan-y; }
     .is-dragging .stack-card-open { cursor: grabbing; }
     .stack-card-open:focus-visible { outline: 3px solid var(--violet-deep); outline-offset: -6px; border-radius: inherit; }
-    .stack-card-org, .stack-card-foot { position: relative; z-index: 0; pointer-events: none; }
-    .stack-card-org { align-self: flex-start; font-size: clamp(.9rem, 5cqw, 1.05rem); font-weight: 600; letter-spacing: -.01em; }
+    .stack-card-foot { position: relative; z-index: 0; pointer-events: none; }
+    .stack-card-org { position: relative; z-index: 2; align-self: flex-start; font-size: clamp(.9rem, 5cqw, 1.05rem); font-weight: 600; letter-spacing: -.01em; text-decoration: none; }
+    .stack-card-org:hover, .stack-card-org:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
     .stack-card-title { display: block; max-width: 100%; font: 500 clamp(1.6rem, 8cqw, 2rem)/1.05 var(--serif); letter-spacing: -.03em; text-wrap: balance; }
     .stack-card-place { margin-top: 12px; font: .72rem/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
     .stack-card--ink { background: #0e0e10; color: #f4f4f6; border-color: rgba(255,255,255,.08); }
@@ -386,6 +387,7 @@
       .step .place { margin-bottom: 11px; }
       .step-note { margin-bottom: 16px; line-height: 1.45; }
       .projects { padding-top: 20px; }
+      .card-stack { height: 310px; }
       .release-card { grid-template-columns: minmax(0, 1fr) auto; }
       .release-cover-wrap { grid-column: 1 / -1; width: 100%; aspect-ratio: 1; }
       .release-card-copy { padding: 22px 20px 24px; }
@@ -569,14 +571,14 @@
             <article class="stack-card stack-card--lime" data-project="extreme">
               <span class="stack-card-art" aria-hidden="true"></span>
               <button class="stack-card-open" type="button" aria-label="Next card" data-i18n-aria="stackNext"></button>
-              <span class="stack-card-org">Clust-ER Build</span>
+              <a class="stack-card-org" href="https://build.clust-er.it/extreme-infrastrutture-critiche/" target="_blank" rel="noopener">Clust-ER Build</a>
               <a class="stack-card-direct" href="https://build.clust-er.it/extreme-infrastrutture-critiche/" target="_blank" rel="noopener" aria-label="EXTREME — official page"><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
               <div class="stack-card-foot"><strong class="stack-card-title" data-i18n="extremeTitle">EXTREME — Extreme Events and Critical Infrastructure</strong><p class="stack-card-place" data-i18n="extremePlace">Bologna · Jan 2026</p></div>
             </article>
             <article class="stack-card stack-card--ink" data-project="innovation">
               <span class="stack-card-art" aria-hidden="true"></span>
               <button class="stack-card-open" type="button" aria-label="Next card" data-i18n-aria="stackNext"></button>
-              <span class="stack-card-org">Clust-ER Build</span>
+              <a class="stack-card-org" href="https://build.clust-er.it/news/innovazione-e-sostenibilita-per-la-rigenerazione-inclusiva-della-costa-romagnola/" target="_blank" rel="noopener">Clust-ER Build</a>
               <a class="stack-card-direct" href="https://build.clust-er.it/news/innovazione-e-sostenibilita-per-la-rigenerazione-inclusiva-della-costa-romagnola/" target="_blank" rel="noopener" aria-label="Innovation and sustainability — official page"><svg class="ne-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
               <div class="stack-card-foot"><strong class="stack-card-title" data-i18n="innovationTitle">Innovation and sustainability for the inclusive regeneration of the Romagna coast</strong><p class="stack-card-place" data-i18n="innovationPlace">Cervia · May 2023</p></div>
             </article>
